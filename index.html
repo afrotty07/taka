@@ -1,584 +1,653 @@
 <!DOCTYPE html>
 <html lang="ja">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>大正浪漫乙女ゲーム</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        /* フォントと全体的なスタイル */
-        @import url('https://fonts.googleapis.com/css2?family=Kiwi+Maru:wght@400;500&display=swap');
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>大正浪漫乙女ゲーム</title>
+<script src="https://cdn.tailwindcss.com"></script&gt;
+<style>
+/* フォントと全体的なスタイル */
+@import url('https://fonts.googleapis.com/css2?family=Kiwi+Maru:wght@400;500&display=swap&#39;);
+body {
+font-family: 'Kiwi Maru', sans-serif;
+background-image: linear-gradient(to bottom, #FCEEEF, #F4D7DF);
+color: #5D4037;
+padding: 1.5rem;
+}
+/* ふりがなのスタイル */
+rt {
+font-size: 0.8em;
+color: #94716B;
+}
+/* ゲームコンテナのスタイル */
+.story-container {
+max-width: 800px;
+margin: auto;
+padding: 2.5rem;
+background-color: #ffffff;
+border-radius: 2rem;
+box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+display: flex;
+flex-direction: column;
+align-items: center;
+}
+/* ストーリー画像のスタイル */
+.story-image {
+width: 100%;
+height: 350px;
+object-fit: cover;
+border-radius: 1.75rem;
+margin-bottom: 2rem;
+box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+/* ストーリーテキストのスタイル */
+.story-text {
+font-size: 1.2rem;
+line-height: 2;
+min-height: 180px;
+text-align: justify;
+}
+/* キャラクター名のスタイル */
+.character-name {
+font-size: 1.5rem;
+font-weight: bold;
+color: #E8A2AD;
+align-self: flex-start;
+margin-bottom: 0.5rem;
+}
+/* 選択肢ボタンのスタイル */
+.choice-button {
+transition: transform 0.3s, box-shadow 0.3s, background-color 0.3s;
+width: 100%;
+text-align: center;
+}
+.choice-button:hover {
+transform: translateY(-4px) scale(1.02);
+box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+background-color: #F2CDD4;
+}
+/* ボタンコンテナのスタイル */
+.button-group {
+display: flex;
+flex-direction: column;
+gap: 1.25rem;
+width: 100%;
+}
+/* プロフィールコンテナのスタイル */
+.profile-container, .vocab-container {
+display: none;
+max-width: 800px;
+margin: auto;
+padding: 2.5rem;
+background-color: #ffffff;
+border-radius: 2rem;
+box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+/* プロフィールカードのスタイル */
+.profile-card {
+display: flex;
+align-items: center;
+margin-bottom: 2rem;
+background-color: #FCEEEF;
+border-radius: 1.5rem;
+padding: 1.5rem;
+box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+/* プロフィール画像のスタイル */
+.profile-image {
+width: 150px;
+height: 150px;
+object-fit: cover;
+border-radius: 50%;
+border: 4px solid #E8A2AD;
+margin-right: 2rem;
+}
+/* 親愛度表示のスタイル */
+#final-score-list {
+list-style-type: none;
+padding: 0;
+width: 100%;
+text-align: left;
+margin-top: 1.5rem;
+}
+#final-score-list li {
+font-size: 1.25rem;
+margin-bottom: 0.75rem;
+color: #5D4037;
+}
+/* 重要語句リストのスタイル */
+.vocab-list {
+list-style-type: none;
+padding: 0;
+width: 100%;
+text-align: left;
+}
+.vocab-list li {
+background-color: #FCEEEF;
+border-radius: 1rem;
+padding: 1rem;
+margin-bottom: 1rem;
+box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+.vocab-list h3 {
+font-size: 1.5rem;
+font-weight: bold;
+color: #E8A2AD;
+margin-bottom: 0.5rem;
+}
 
-        body {
-            font-family: 'Kiwi Maru', sans-serif;
-            background-image: linear-gradient(to bottom, #FCEEEF, #F4D7DF);
-            color: #5D4037;
-            padding: 1.5rem;
-        }
-
-        /* ゲームコンテナのスタイル */
-        .story-container {
-            max-width: 800px;
-            margin: auto;
-            padding: 2.5rem;
-            background-color: #ffffff;
-            border-radius: 2rem;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        /* ストーリー画像のスタイル */
-        .story-image {
-            width: 100%;
-            height: 350px;
-            object-fit: cover;
-            border-radius: 1.75rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
-
-        /* ストーリーテキストのスタイル */
-        .story-text {
-            font-size: 1.2rem;
-            line-height: 2;
-            min-height: 180px;
-            text-align: justify;
-        }
-
-        /* キャラクター名のスタイル */
-        .character-name {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #E8A2AD;
-            align-self: flex-start;
-            margin-bottom: 0.5rem;
-        }
-
-        /* 選択肢ボタンのスタイル */
-        .choice-button {
-            transition: transform 0.3s, box-shadow 0.3s, background-color 0.3s;
-            width: 100%;
-            text-align: center;
-        }
-
-        .choice-button:hover {
-            transform: translateY(-4px) scale(1.02);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-            background-color: #F2CDD4;
-        }
-
-        /* ボタンコンテナのスタイル */
-        .button-group {
-            display: flex;
-            flex-direction: column;
-            gap: 1.25rem;
-            width: 100%;
-        }
-
-        /* プロフィールコンテナのスタイル */
-        .profile-container {
-            display: none;
-            max-width: 800px;
-            margin: auto;
-            padding: 2.5rem;
-            background-color: #ffffff;
-            border-radius: 2rem;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-        }
-
-        /* プロフィールカードのスタイル */
-        .profile-card {
-            display: flex;
-            align-items: center;
-            margin-bottom: 2rem;
-            background-color: #FCEEEF;
-            border-radius: 1.5rem;
-            padding: 1.5rem;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
-
-        /* プロフィール画像のスタイル */
-        .profile-image {
-            width: 150px;
-            height: 150px;
-            object-fit: cover;
-            border-radius: 50%;
-            border: 4px solid #E8A2AD;
-            margin-right: 2rem;
-        }
-
-        /* 親愛度表示のスタイル */
-        #final-score-list {
-            list-style-type: none;
-            padding: 0;
-            width: 100%;
-            text-align: left;
-            margin-top: 1.5rem;
-        }
-
-        #final-score-list li {
-            font-size: 1.25rem;
-            margin-bottom: 0.75rem;
-            color: #5D4037;
-        }
-
-        /* レスポンシブデザイン */
-        @media (max-width: 640px) {
-            .profile-card {
-                flex-direction: column;
-                text-align: center;
-            }
-
-            .profile-image {
-                margin-right: 0;
-                margin-bottom: 1rem;
-            }
-        }
-    </style>
+/* レスポンシブデザイン */
+@media (max-width: 640px) {
+.profile-card {
+flex-direction: column;
+text-align: center;
+}
+.profile-image {
+margin-right: 0;
+margin-bottom: 1rem;
+}
+}
+</style>
 </head>
-
 <body class="p-4">
-    <div id="game-container" class="story-container">
-        <h1 class="text-4xl text-center font-bold mb-6 text-[#E8A2AD]">大正浪漫乙女ゲーム</h1>
-        <div id="status-container" class="text-center mb-6 hidden">
-            <span id="score-katsura">桂親愛度: <span class="font-bold text-[#E8A2AD]">0</span></span>
-            <span id="score-hara" class="ml-4">原親愛度: <span class="font-bold text-[#E8A2AD]">0</span></span>
-            <span id="score-wakatsuki" class="ml-4">若槻親愛度: <span class="font-bold text-[#E8A2AD]">0</span></span>
-            <span id="score-tanaka" class="ml-4">田中親愛度: <span class="font-bold text-[#E8A2AD]">0</span></span>
-        </div>
-        <img id="story-image" src="https://placehold.co/800x350/E8D6E1/5D4037?text=華やかな庭園" alt="ゲームの背景画像"
-            class="story-image">
-        <div class="character-name" id="character-name"></div>
-        <p class="story-text" id="story-text"></p>
-        <div id="choices-container" class="button-group mt-8"></div>
-        <button onclick="showProfiles()"
-            class="choice-button bg-[#E8A2AD] text-[#5D4037] py-3 px-6 rounded-full font-semibold mt-8 shadow-lg w-auto">人物プロフィール</button>
-    </div>
+<div id="game-container" class="story-container">
+<h1 class="text-4xl text-center font-bold mb-6 text-[#E8A2AD]"><ruby>大正<rt>たいしょう</rt></ruby><ruby>浪漫<rt>ろまん</rt></ruby><ruby>乙女<rt>おとめ</rt></ruby>ゲーム</h1>
+<div id="status-container" class="text-center mb-6 hidden">
+<span id="score-katsura"><ruby>桂<rt>かつら</rt></ruby>親愛度: <span class="font-bold text-[#E8A2AD]">0</span></span>
+<span id="score-hara" class="ml-4"><ruby>原<rt>はら</rt></ruby>親愛度: <span class="font-bold text-[#E8A2AD]">0</span></span>
+<span id="score-wakatsuki" class="ml-4"><ruby>若槻<rt>わかつき</rt></ruby>親愛度: <span class="font-bold text-[#E8A2AD]">0</span></span>
+<span id="score-tanaka" class="ml-4"><ruby>田中<rt>たなか</rt></ruby>親愛度: <span class="font-bold text-[#E8A2AD]">0</span></span>
+</div>
+<img id="story-image" src="https://placehold.co/800x350/E8D6E1/5D4037?text=華やかな庭園" alt="ゲームの背景画像" class="story-image">
+<div class="character-name" id="character-name"></div>
+<p class="story-text" id="story-text"></p>
+<div id="choices-container" class="button-group mt-8"></div>
+<div class="flex flex-col md:flex-row gap-4 mt-8 w-full">
+<button onclick="showProfiles()" class="choice-button bg-[#E8A2AD] text-[#5D4037] py-3 px-6 rounded-full font-semibold shadow-lg md:w-1/2">人物プロフィール</button>
+<button onclick="showVocab()" class="choice-button bg-[#E8A2AD] text-[#5D4037] py-3 px-6 rounded-full font-semibold shadow-lg md:w-1/2">重要語句解説</button>
+</div>
+</div>
 
-    <!-- 新しく追加したプロフィール表示用コンテナ -->
-    <div id="profile-container" class="profile-container">
-        <h2 class="text-3xl text-center font-bold mb-8 text-[#E8A2AD]">人物プロフィール</h2>
-        <div id="profile-list"></div>
-        <button onclick="hideProfiles()"
-            class="choice-button bg-[#E8A2AD] text-[#5D4037] py-3 px-6 rounded-full font-semibold mt-8 shadow-lg w-auto">ゲームに戻る</button>
-    </div>
+<!-- プロフィール表示用コンテナ -->
+<div id="profile-container" class="profile-container">
+<h2 class="text-3xl text-center font-bold mb-8 text-[#E8A2AD]">人物プロフィール</h2>
+<div id="profile-list"></div>
+<button onclick="hideProfiles()" class="choice-button bg-[#E8A2AD] text-[#5D4037] py-3 px-6 rounded-full font-semibold mt-8 shadow-lg w-auto">ゲームに戻る</button>
+</div>
 
-    <script>
-        // ゲームの状態を管理するオブジェクト
-        let gameState = {
-            progress: 'start',
-            character: null,
-            scores: {
-                katsura: 0,
-                hara: 0,
-                wakatsuki: 0,
-                tanaka: 0
-            }
-        };
+<!-- 重要語句解説用コンテナ -->
+<div id="vocab-container" class="vocab-container">
+<h2 class="text-3xl text-center font-bold mb-8 text-[#E8A2AD]">重要語句解説</h2>
+<ul class="vocab-list">
+<li>
+<h3><ruby>大正<rt>たいしょう</rt></ruby><ruby>デモクラシー<rt></rt></ruby></h3>
+<p>第一次世界大戦中に、民主主義的な思想や運動が広まった風潮のこと。議会政治を確立しようとする動きが活発になり、「政党政治」への道を切り開いた。</p>
+</li>
+<li>
+<h3><ruby>藩閥<rt>はんばつ</rt></ruby><ruby>政治<rt>せいじ</rt></ruby></h3>
+<p>明治時代に、薩摩藩や長州藩など特定の藩出身の軍人や官僚が、政治の実権を握っていた体制のこと。</p>
+</li>
+<li>
+<h3><ruby>憲政<rt>けんせい</rt></ruby><ruby>擁護<rt>ようご</rt></ruby><ruby>運動<rt>うんどう</rt></ruby></h3>
+<p>「閥族打破、憲政擁護」をスローガンに、藩閥政治を批判し、政党政治を実現しようとした国民運動。第1次、第2次と続いた。</p>
+</li>
+<li>
+<h3><ruby>平民<rt>へいみん</rt></ruby><ruby>宰相<rt>さいしょう</rt></ruby></h3>
+<p><ruby>原<rt>はら</rt> 敬<rt>たかし</rt></ruby>の愛称。衆議院議員として初めて首相となり、本格的な政党内閣を組織したことから、国民に親しまれた。</p>
+</li>
+<li>
+<h3><ruby>協調<rt>きょうちょう</rt></ruby><ruby>外交<rt>がいこう</rt></ruby></h3>
+<p>軍事力に頼らず、国際連盟などを通じて平和的な国際協調を目指す外交方針。幣原喜重郎も推進したことで知られる。</p>
+</li>
+<li>
+<h3><ruby>張作霖<rt>ちょうさくりん</rt></ruby><ruby>爆殺<rt>ばくさつ</rt></ruby><ruby>事件<rt>じけん</rt></ruby></h3>
+<p>1928年、<ruby>満州<rt>まんしゅう</rt></ruby>の軍閥・<ruby>張作霖<rt>ちょうさくりん</rt></ruby>を、日本の関東軍が<ruby>奉天<rt>ほうてん</rt></ruby>近郊で爆殺した事件。軍部の独断的な行動が問題となり、当時の<ruby>田中<rt>たなか</rt> 義一<rt>ぎいち</rt></ruby>内閣の総辞職につながった。</p>
+</li>
+<li>
+<h3><ruby>大戦<rt>たいせん</rt></ruby><ruby>景気<rt>けいき</rt></ruby></h3>
+<p>第一次世界大戦中に、日本がヨーロッパへの物資輸出で巨額の利益を上げたことによる好景気。これにより、日本は債務国から<ruby>債権国<rt>さいけんこく</rt></ruby>へと変わった。</p>
+</li>
+<li>
+<h3><ruby>戦後<rt>せんご</rt></ruby><ruby>恐慌<rt>きょうこう</rt></ruby></h3>
+<p>第一次世界大戦後の反動で、世界的に不況に陥ったこと。日本では<ruby>大戦<rt>たいせん</rt></ruby>景気で生産設備を拡大した企業が、一気に在庫を抱え経営破綻した。</p>
+</li>
+<li>
+<h3><ruby>震災<rt>しんさい</rt></ruby><ruby>手形<rt>てがた</rt></ruby></h3>
+<p>1923年の関東大震災で、企業が銀行に支払えなくなった手形のこと。政府はこれを救済するため、日本銀行に特別融資をさせたが、かえって金融不安を招いた。</p>
+</li>
+</ul>
+<button onclick="hideVocab()" class="choice-button bg-[#E8A2AD] text-[#5D4037] py-3 px-6 rounded-full font-semibold mt-8 shadow-lg w-auto">ゲームに戻る</button>
+</div>
 
-        // プロフィール情報
-        const profiles = {
-            katsura: {
-                name: "桂 太郎",
-                bio: "陸軍大将。三度首相を務めた、明治・大正期の政界の重鎮。日露戦争後の政権を担い、強固な藩閥政治を築いた。その厳格な人柄の裏には、あなたへの深い愛情が秘められている。",
-                image: "https://placehold.co/150x150/F5C9C8/5D4037?text=桂",
-                details: "誕生日: 1848年11月28日, 血液型: A型",
-                historical_facts: "【1912年】第3次桂内閣を組織。陸軍の二個師団増設問題で、藩閥政治に対する国民の不満が高まり、憲政擁護運動が激化。この運動により、わずか2ヶ月で総辞職に追い込まれ、大正政変の引き金となった。"
-            },
-            hara: {
-                name: "原 敬",
-                bio: "「平民宰相」として知られる、日本初の本格的な政党内閣を組織した首相。国民の声を政治に反映させることを目指し、民衆の生活向上に尽力した。彼の穏やかな笑顔は、あなたの心を温かく包み込む。",
-                image: "https://placehold.co/150x150/B8E8B8/5D4037?text=原",
-                details: "誕生日: 1856年3月15日, 血液型: O型",
-                historical_facts: "【1918年】米騒動後の政治不安の中、立憲政友会総裁として初の本格的な政党内閣を組織。庶民派として人気を集めたが、普通選挙法の実施は先送りし、鉄道建設や教育の拡充に力を入れた。"
-            },
-            wakatsuki: {
-                name: "若槻 礼次郎",
-                bio: "官僚出身の政治家で、二度首相を務めた。協調外交を推進し、国際的な信頼関係を築くことに尽力した。優しく知的な彼は、困難な時代を乗り越えるあなたの良き理解者となる。",
-                image: "https://placehold.co/150x150/D4B8E1/5D4037?text=若槻",
-                details: "誕生日: 1866年3月21日, 血液型: AB型",
-                historical_facts: "【1927年】第1次若槻内閣時に、金融恐慌が勃発。台湾銀行の休業を巡る政府の対応が国会で否決され、内閣は総辞職に追い込まれた。"
-            },
-            tanaka: {
-                name: "田中 義一",
-                bio: "陸軍大将。豪放磊落な性格で、満州の権益確保のため強硬な外交政策を主張した。彼の強引な言動の裏には、大切なものを守り抜こうとする揺るぎない信念が隠されている。",
-                image: "https://placehold.co/150x150/E3C2C2/5D4037?text=田中",
-                details: "誕生日: 1864年6月25日, 血液型: B型",
-                historical_facts: "【1928年】第1次田中内閣時に、満州の張作霖が日本軍によって爆殺される事件が勃発。事件の処理を巡り、昭和天皇から厳しい叱責を受け、内閣は総辞職に至った。"
-            }
-        };
+<script>
+// ゲームの状態を管理するオブジェクト
+let gameState = {
+progress: 'start',
+character: null,
+scores: {
+katsura: 0,
+hara: 0,
+wakatsuki: 0,
+tanaka: 0
+}
+};
 
-        // ストーリーのデータ
-        const story = {
-            start: {
-                text: "華やかな大正時代、私は名門・西園寺家のお姫様。今日は園遊会に招かれています。豪華なドレスに身を包み、庭園へ向かうと、そこで4人の男性と出会いました。",
-                choices: [
-                    { text: "桂太郎に声をかける", next: 'encounter_katsura' },
-                    { text: "原敬に声をかける", next: 'encounter_hara' },
-                    { text: "若槻礼次郎に声をかける", next: 'encounter_wakatsuki' },
-                    { text: "田中義一に声をかける", next: 'encounter_tanaka' },
-                    { text: "番外編をプレイする", next: 'extra_episode_start' }
-                ],
-                image: "https://placehold.co/800x350/E8D6E1/5D4037?text=華やかな庭園"
-            },
-            encounter_katsura: {
-                text: "「お嬢様、この桜のように可憐なお姿…」厳格な軍服に身を包んだ桂さんが、私に深々と頭を下げた。彼の言葉に、私は少し胸が高鳴った。",
-                choices: [
-                    { text: "「ありがとうございます、桂様もお素敵です」と微笑む", next: 'katsura_story_1', scoreChange: { katsura: 15 } },
-                    { text: "「お仕事は順調ですか？」と話しかける", next: 'katsura_story_2', scoreChange: { katsura: 10 } }
-                ],
-                character: "桂 太郎",
-                image: "https://placehold.co/800x350/F5C9C8/5D4037?text=桂太郎とあなた（スチル）"
-            },
-            katsura_story_1: {
-                text: "私の言葉に、桂さんは少し照れたように「お褒めいただき光栄です。お嬢様を守るためなら、どんな困難も乗り越えましょう」と力強く答えてくれた。彼の眼差しは真剣だった。",
-                choices: [
-                    { text: "「大正政変」について尋ねる", next: 'katsura_story_1_1', scoreChange: { katsura: 20 } },
-                    { text: "「お守りいただけるなんて、光栄です」と返す", next: 'katsura_story_1_2', scoreChange: { katsura: 25 } }
-                ],
-                character: "桂 太郎",
-                image: "https://placehold.co/800x350/F5C9C8/5D4037?text=桂太郎とあなた（スチル）"
-            },
-            katsura_story_1_1: {
-                text: "「…大正政変は、この国の未来を賭けた戦いです。しかし、あなたがいるからこそ、私は戦えます」彼の言葉に、あなたの心は揺さぶられる。",
-                choices: [
-                    { text: "物語の終わりへ", next: 'final_end', scoreChange: { katsura: 20 } }
-                ],
-                character: "桂 太郎",
-                image: "https://placehold.co/800x350/F5C9C8/5D4037?text=桂太郎とあなた（スチル）"
-            },
-            katsura_story_1_2: {
-                text: "「…ええ、一生をかけて、あなたをお守りします」彼はそっとあなたの手に触れる。その温かさに、あなたは深い愛情を感じた。",
-                choices: [
-                    { text: "物語の終わりへ", next: 'final_end', scoreChange: { katsura: 30 } }
-                ],
-                character: "桂 太郎",
-                image: "https://placehold.co/800x350/F5C9C8/5D4037?text=桂太郎とあなた（スチル）"
-            },
-            encounter_hara: {
-                text: "「おや、お嬢様。このような場所で会うのは珍しいですな。私は原敬と申します。平民ですが、お嬢様のお役に立てることがあるかもしれません」と、彼は気さくに話しかけてきた。",
-                choices: [
-                    { text: "「平民宰相様ですね、存じ上げております」と答える", next: 'hara_story_1', scoreChange: { hara: 15 } },
-                    { text: "「あなたのような方と話すのは初めてです」と正直に伝える", next: 'hara_story_2', scoreChange: { hara: 10 } }
-                ],
-                character: "原 敬",
-                image: "https://placehold.co/800x350/B8E8B8/5D4037?text=原敬とあなた（スチル）"
-            },
-            hara_story_1: {
-                text: "「平民の私でも、お嬢様のようなお方と話せる時代になった。これは良い時代ですな」あなたの言葉に、原さんは嬉しそうに笑った。彼の穏やかな笑顔に、私は安堵した。",
-                choices: [
-                    { text: "「米騒動」について尋ねる", next: 'hara_story_1_1', scoreChange: { hara: 20 } },
-                    { text: "「はい、とても良い時代ですね」と同意する", next: 'hara_story_1_2', scoreChange: { hara: 25 } }
-                ],
-                character: "原 敬",
-                image: "https://placehold.co/800x350/B8E8B8/5D4037?text=原敬とあなた（スチル）"
-            },
-            hara_story_1_1: {
-                text: "「…米騒動は、民衆の苦しみの声です。私はその声を無視できません。お嬢様にも、民衆の暮らしを理解していただきたい」彼の真摯な眼差しに、あなたは心を動かされた。",
-                choices: [
-                    { text: "物語の終わりへ", next: 'final_end', scoreChange: { hara: 20 } }
-                ],
-                character: "原 敬",
-                image: "https://placehold.co/800x350/B8E8B8/5D4037?text=原敬とあなた（スチル）"
-            },
-            hara_story_1_2: {
-                text: "「…ありがとうございます。お嬢様のような方がいてくだされば、この国はもっと良くなります」彼はあなたの手を取り、深く頭を下げた。あなたの心に温かい感情が広がった。",
-                choices: [
-                    { text: "物語の終わりへ", next: 'final_end', scoreChange: { hara: 30 } }
-                ],
-                character: "原 敬",
-                image: "https://placehold.co/800x350/B8E8B8/5D4037?text=原敬とあなた（スチル）"
-            },
-            encounter_wakatsuki: {
-                text: "「おや、西園寺のお嬢様。私は若槻と申します。今度の外交には苦慮しておりまして…」彼は少し困った顔で私に話しかけた。彼の眉間のしわが、苦労を物語っているようだった。",
-                choices: [
-                    { text: "「何かお手伝いできることは？」と尋ねる", next: 'wakatsuki_story_1', scoreChange: { wakatsuki: 15 } },
-                    { text: "「きっとうまくいきますよ」と励ます", next: 'wakatsuki_story_2', scoreChange: { wakatsuki: 10 } }
-                ],
-                character: "若槻 礼次郎",
-                image: "https://placehold.co/800x350/D4B8E1/5D4037?text=若槻礼次郎とあなた（スチル）"
-            },
-            wakatsuki_story_1: {
-                text: "「ありがとうございます。お嬢様の優しさが、私の心に沁み渡ります」私の言葉に、彼は顔を輝かせた。「共に平和な未来を目指しましょう」彼は私の手をそっと握り、その温かさに私は安らぎを感じた。",
-                choices: [
-                    { text: "「協調外交」について尋ねる", next: 'wakatsuki_story_1_1', scoreChange: { wakatsuki: 20 } },
-                    { text: "「はい、平和な未来を信じます」と応える", next: 'wakatsuki_story_1_2', scoreChange: { wakatsuki: 25 } }
-                ],
-                character: "若槻 礼次郎",
-                image: "https://placehold.co/800x350/D4B8E1/5D4037?text=若槻礼次郎とあなた（スチル）"
-            },
-            wakatsuki_story_1_1: {
-                text: "「…協調外交は、困難を伴いますが、戦争を避けるための唯一の道です。私は、この道を歩み続けます」彼は静かに、しかし力強く語った。",
-                choices: [
-                    { text: "物語の終わりへ", next: 'final_end', scoreChange: { wakatsuki: 20 } }
-                ],
-                character: "若槻 礼次郎",
-                image: "https://placehold.co/800x350/D4B8E1/5D4037?text=若槻礼次郎とあなた（スチル）"
-            },
-            wakatsuki_story_1_2: {
-                text: "「…あなたの言葉が、私の支えです。どんな困難も、あなたと一緒なら乗り越えられます」彼の表情は安堵に満ちていた。",
-                choices: [
-                    { text: "物語の終わりへ", next: 'final_end', scoreChange: { wakatsuki: 30 } }
-                ],
-                character: "若槻 礼次郎",
-                image: "https://placehold.co/800x350/D4B8E1/5D4037?text=若槻礼次郎とあなた（スチル）"
-            },
-            encounter_tanaka: {
-                text: "「ほう、お嬢様ですかな。俺は田中義一だ。平和だの協調だのと言っている暇はねぇ。力で満州の権益は守る。俺についてくれば、退屈はさせねぇぜ」彼は私の目をまっすぐに見て、挑戦的な笑みを浮かべた。彼の強引さに、私は少し戸惑いつつも、目を離せなかった。",
-                choices: [
-                    { text: "「お言葉ですが、力だけでは何も解決しません」と反論する", next: 'tanaka_story_1', scoreChange: { tanaka: 15 } },
-                    { text: "「あなたのような方は初めてです…」と正直に伝える", next: 'tanaka_story_2', scoreChange: { tanaka: 10 } }
-                ],
-                character: "田中 義一",
-                image: "https://placehold.co/800x350/E3C2C2/5D4037?text=田中義一とあなた（スチル）"
-            },
-            tanaka_story_1: {
-                text: "「面白い。俺の考えに反論するとはな」彼はニヤリと笑った。「だが、それがお嬢様の想いなら、少しは考えてやろう」彼の心に、わずかな変化が生まれた気がした。",
-                choices: [
-                    { text: "「山東出兵」について尋ねる", next: 'tanaka_story_1_1', scoreChange: { tanaka: 20 } },
-                    { text: "「私と一緒なら、別の道が見つかるはずです」と伝える", next: 'tanaka_story_1_2', scoreChange: { tanaka: 25 } }
-                ],
-                character: "田中 義一",
-                image: "https://placehold.co/800x350/E3C2C2/5D4037?text=田中義一とあなた（スチル）"
-            },
-            tanaka_story_1_1: {
-                text: "「…山東出兵は、日本の未来のためだ。だが、お前がそれを望まないなら…」彼は少し戸惑った様子を見せた。あなたの言葉が、彼の心を少しずつ変えていく。",
-                choices: [
-                    { text: "物語の終わりへ", next: 'final_end', scoreChange: { tanaka: 20 } }
-                ],
-                character: "田中 義一",
-                image: "https://placehold.co/800x350/E3C2C2/5D4037?text=田中義一とあなた（スチル）"
-            },
-            tanaka_story_1_2: {
-                text: "「…フン。そうか。お前と一緒なら、面白いことができそうだ」彼はあなたの言葉を気に入り、豪快に笑った。彼の笑顔に、あなたは魅了された。",
-                choices: [
-                    { text: "物語の終わりへ", next: 'final_end', scoreChange: { tanaka: 30 } }
-                ],
-                character: "田中 義一",
-                image: "https://placehold.co/800x350/E3C2C2/5D4037?text=田中義一とあなた（スチル）"
-            },
-            final_end: {
-                text: "物語の終わりです。親愛度の合計に基づいて、あなたと最も親密になった人物が決まります。",
-                choices: [], // choices will be dynamically generated
-                image: "https://placehold.co/800x350/FFC0CB/5D4037?text=物語の終わり"
-            },
-            // ここから番外編のシナリオ
-            extra_episode_start: {
-                text: "ここは鹿鳴館の応接室。あなたは日本の未来について議論する円卓会議に招かれました。そこに現れたのは、歴史を動かしてきた4人の人物でした。",
-                choices: [
-                    { text: "彼らの話を聞く", next: 'extra_episode_intro' }
-                ],
-                image: "https://placehold.co/800x350/F8D7C8/5D4037?text=鹿鳴館の応接室"
-            },
-            extra_episode_intro: {
-                text: "それぞれの思惑が交錯する中、一人の男性が口を開きました。「大戦景気という言葉を耳にしましたか？これは第一次世界大戦をきっかけに、日本が空前の好景気を迎えたことです。」",
-                choices: [
-                    { text: "「景気の良い話ですね」と微笑む", next: 'extra_episode_topic_1' },
-                    { text: "「具体的には、どのような産業が潤ったのですか？」と尋ねる", next: 'extra_episode_topic_1_details' }
-                ],
-                character: "原 敬",
-                image: "https://placehold.co/800x350/F8D7C8/5D4037?text=鹿鳴館の応接室"
-            },
-            extra_episode_topic_1: {
-                text: "原「ええ、まさに！ヨーロッパが戦争で疲弊する中、日本はアジア市場での輸出を伸ばし、巨額の利益を上げました。それまで借金があった国が、逆に諸外国にお金を貸すまでになったのです。」",
-                choices: [
-                    { text: "「すごいですね！」と感嘆する", next: 'extra_episode_topic_2' },
-                    { text: "「輸出が好調だったのは、なぜでしょうか？」と尋ねる", next: 'extra_episode_topic_1_details' }
-                ],
-                character: "原 敬",
-                image: "https://placehold.co/800x350/B8E8B8/5D4037?text=原敬とあなた（スチル）"
-            },
-            extra_episode_topic_1_details: {
-                text: "原「特に綿織物や生糸の輸出が好調でした。ヨーロッパ諸国が戦争のためにアジア市場から撤退した隙を突いて、日本製品が圧倒的なシェアを獲得したのです。」",
-                choices: [
-                    { text: "「造船業はどうでしたか？」と質問する", next: 'extra_episode_topic_2' }
-                ],
-                character: "原 敬",
-                image: "https://placehold.co/800x350/B8E8B8/5D4037?text=原敬とあなた（スチル）"
-            },
-            extra_episode_topic_2: {
-                text: "若槻「船舶不足のため、造船業も大変な好況でしたね。船を造れば造るほど儲かる時代で、中には一気に財を成し、『船成金』と呼ばれる者も現れました。」彼の言葉は、少し憂鬱そうに聞こえました。",
-                choices: [
-                    { text: "「ですが、その後の不況が…」と続ける", next: 'extra_episode_topic_3' },
-                    { text: "「新しい船を造るのは、素敵なことですね」と話す", next: 'extra_episode_topic_2_optimistic' }
-                ],
-                character: "若槻 礼次郎",
-                image: "https://placehold.co/800x350/D4B8E1/5D4037?text=若槻礼次郎とあなた（スチル）"
-            },
-            extra_episode_topic_2_optimistic: {
-                text: "若槻「…ええ、そうですね。平和な時代なら、それが何よりです。しかし、戦争景気はいつか必ず終わります。私はその後の国際協調こそが大切だと考えています。」彼の眼差しは真剣だった。",
-                choices: [
-                    { text: "「不況の原因は何でしょうか？」と尋ねる", next: 'extra_episode_topic_3' }
-                ],
-                character: "若槻 礼次郎",
-                image: "https://placehold.co/800x350/D4B8E1/5D4037?text=若槻礼次郎とあなた（スチル）"
-            },
-            extra_episode_topic_3: {
-                text: "田中「フン…大戦景気の後の戦後恐慌だ。さらに1923年の関東大震災による震災手形の問題が重なり、不況はさらに深刻になった。政府の対応が甘かったのだ。」田中さんが苦々しげに言いました。彼は若槻さんの協調外交を批判しているようです。",
-                choices: [
-                    { text: "「震災手形とは何ですか？」と質問する", next: 'extra_episode_topic_4' },
-                    { text: "「力による解決が必要だとお考えですか？」と尋ねる", next: 'extra_episode_topic_3_aggressive' }
-                ],
-                character: "田中 義一",
-                image: "https://placehold.co/800x350/E3C2C2/5D4037?text=田中義一とあなた（スチル）"
-            },
-            extra_episode_topic_3_aggressive: {
-                text: "田中「当たり前だ。危機に瀕したときは、弱腰な協調など無意味。国益のためには、時に断固たる措置が必要なのだ。」彼の言葉には、揺るぎない信念が感じられた。",
-                choices: [
-                    { text: "「震災手形について教えてください」と話を変える", next: 'extra_episode_topic_4' }
-                ],
-                character: "田中 義一",
-                image: "https://placehold.co/800x350/E3C2C2/5D4037?text=田中義一とあなた（スチル）"
-            },
-            extra_episode_topic_4: {
-                text: "原「大震災で、多くの企業が銀行から借りたお金を返せなくなりました。その借金の証書が『震災手形』です。政府は、日本銀行がその手形を買い取ることで、銀行を救済しようとしましたが、これがかえって経済の混乱を招いてしまったのです。」原さんが丁寧に、しかし難しい顔で説明してくれました。",
-                choices: [
-                    { text: "「ありがとうございました」と感謝を伝える", next: 'extra_episode_end' }
-                ],
-                character: "原 敬",
-                image: "https://placehold.co/800x350/B8E8B8/5D4037?text=原敬とあなた（スチル）"
-            },
-            extra_episode_end: {
-                text: "様々な思惑が交錯する円卓会議。あなたは彼らの話を聞き、この時代の光と影を垣間見ました。この経験は、あなたの心に深く刻み込まれることでしょう。",
-                choices: [
-                    { text: "最初に戻る", next: 'start' }
-                ],
-                image: "https://placehold.co/800x350/FFC0CB/5D4037?text=物語の終わり"
-            },
-        };
+// プロフィール情報
+const profiles = {
+katsura: {
+name: "<ruby>桂<rt>かつら</rt> 太郎<rt>たろう</rt></ruby>",
+bio: "<ruby>陸軍<rt>りくぐん</rt></ruby><ruby>大将<rt>たいしょう</rt></ruby>。三度首相を務めた、明治・大正期の<ruby>政界<rt>せいかい</rt></ruby>の<ruby>重鎮<rt>じゅうちん</rt></ruby>。<ruby>日露<rt>にちろ</rt></ruby>戦争後の<ruby>政権<rt>せいけん</rt></ruby>を<ruby>担<rt>にな</rt></ruby>い、強固な<ruby>藩閥<rt>はんばつ</rt></ruby><ruby>政治<rt>せいじ</rt></ruby>を<ruby>築<rt>きず</rt></ruby>いた。その厳格な人柄の<ruby>裏<rt>うら</rt></ruby>には、あなたへの深い<ruby>愛情<rt>あいじょう</rt></ruby>が<ruby>秘<rt>ひ</rt></ruby>められている。",
+image: "https://placehold.co/150x150/F5C9C8/5D4037?text=桂",
+details: "<ruby>誕生日<rt>たんじょうび</rt></ruby>: 1848年11月28日, <ruby>血液型<rt>けつえきがた</rt></ruby>: A型",
+historical_facts: "【1912年】第3次<ruby>桂<rt>かつら</rt></ruby>内閣を組織。陸軍の<ruby>二個師団<rt>にこしだん</rt></ruby><ruby>増設<rt>ぞうせつ</rt></ruby><ruby>問題<rt>もんだい</rt></ruby>で、<ruby>藩閥<rt>はんばつ</rt></ruby><ruby>政治<rt>せいじ</rt></ruby>に対する国民の<ruby>不満<rt>ふまん</rt></ruby>が<ruby>高<rt>たか</rt></ruby>まり、<ruby>憲政<rt>けんせい</rt></ruby><ruby>擁護<rt>ようご</rt></ruby><ruby>運動<rt>うんどう</rt></ruby>が<ruby>激化<rt>げきか</rt></ruby>。この<ruby>運動<rt>うんどう</rt></ruby>により、わずか2ヶ月で<ruby>総辞職<rt>そうじしょく</rt></ruby>に<ruby>追<rt>お</rt></ruby>い<ruby>込<rt>こ</rt></ruby>まれ、<ruby>大正<rt>たいしょう</rt></ruby><ruby>政変<rt>せいへん</rt></ruby>の<ruby>引<rt>ひ</rt></ruby>き<ruby>金<rt>がね</rt></ruby>となった。"
+},
+hara: {
+name: "<ruby>原<rt>はら</rt> 敬<rt>たかし</rt></ruby>",
+bio: "「<ruby>平民<rt>へいみん</rt></ruby><ruby>宰相<rt>さいしょう</rt></ruby>」として知られる、日本初の本格的な<ruby>政党<rt>せいとう</rt></ruby>内閣を組織した首相。国民の声を<ruby>政治<rt>せいじ</rt></ruby>に<ruby>反映<rt>はんえい</rt></ruby>させることを<ruby>目指<rt>めざ</rt></ruby>し、民衆の生活<ruby>向上<rt>こうじょう</rt></ruby>に<ruby>尽力<rt>じんりょく</rt></ruby>した。彼の穏やかな<ruby>笑顔<rt>えがお</rt></ruby>は、あなたの心を温かく<ruby>包<rt>つつ</rt></ruby>み<ruby>込<rt>こ</rt></ruby>む。",
+image: "https://placehold.co/150x150/B8E8B8/5D4037?text=原",
+details: "<ruby>誕生日<rt>たんじょうび</rt></ruby>: 1856年3月15日, <ruby>血液型<rt>けつえきがた</rt></ruby>: O型",
+historical_facts: "【1918年】<ruby>米騒動<rt>こめそうどう</rt></ruby>後の<ruby>政治<rt>せいじ</rt></ruby><ruby>不安<rt>ふあん</rt></ruby>の<ruby>中<rt>なか</rt></ruby>、<ruby>立憲政友会<rt>りっけんせいゆうかい</rt></ruby>総裁として初の本格的な<ruby>政党<rt>せいとう</rt></ruby>内閣を組織。庶民<ruby>派<rt>は</rt></ruby>として人気を<ruby>集<rt>あつ</rt></ruby>めたが、<ruby>普通<rt>ふつう</rt></ruby><ruby>選挙法<rt>せんきょほう</rt></ruby>の<ruby>実施<rt>じっし</rt></ruby>は<ruby>先送<rt>さきおく</rt></ruby>りにし、<ruby>鉄道<rt>てつどう</rt></ruby><ruby>建設<rt>けんせつ</rt></ruby>や<ruby>教育<rt>きょういく</rt></ruby>の<ruby>拡充<rt>かくじゅう</rt></ruby>に力を入れた。"
+},
+wakatsuki: {
+name: "<ruby>若槻<rt>わかつき</rt> 礼次郎<rt>れいじろう</rt></ruby>",
+bio: "<ruby>官僚<rt>かんりょう</rt></ruby><ruby>出身<rt>しゅっしん</rt></ruby>の<ruby>政治家<rt>せいじか</rt></ruby>で、二度首相を務めた。<ruby>協調<rt>きょうちょう</rt></ruby><ruby>外交<rt>がいこう</rt></ruby>を<ruby>推進<rt>すいしん</rt></ruby>し、<ruby>国際的<rt>こくさいてき</rt></ruby>な<ruby>信頼<rt>しんらい</rt></ruby><ruby>関係<rt>かんけい</rt></ruby>を<ruby>築<rt>きず</rt></ruby>くことに<ruby>尽力<rt>じんりょく</rt></ruby>した。優しく知的な彼は、困難な時代を<ruby>乗<rt>の</rt></ruby>り<ruby>越<rt>こ</rt></ruby>えるあなたの<ruby>良<rt>よ</rt></ruby>き<ruby>理解者<rt>りかいしゃ</rt></ruby>となる。",
+image: "https://placehold.co/150x150/D4B8E1/5D4037?text=若槻",
+details: "<ruby>誕生日<rt>たんじょうび</rt></ruby>: 1866年3月21日, <ruby>血液型<rt>けつえきがた</rt></ruby>: AB型",
+historical_facts: "【1927年】第1次<ruby>若槻<rt>わかつき</rt></ruby>内閣時に、<ruby>金融<rt>きんゆう</rt></ruby><ruby>恐慌<rt>きょうこう</rt></ruby>が<ruby>勃発<rt>ぼっぱつ</rt></ruby>。台湾銀行の休業を<ruby>巡<rt>めぐ</rt></ruby>る政府の<ruby>対応<rt>たいおう</rt></ruby>が<ruby>国会<rt>こっかい</rt></ruby>で<ruby>否決<rt>ひけつ</rt></ruby>され、内閣は<ruby>総辞職<rt>そうじしょく</rt></ruby>に<ruby>追<rt>お</rt></ruby>い<ruby>込<rt>こ</rt></ruby>まれた。"
+},
+tanaka: {
+name: "<ruby>田中<rt>たなか</rt> 義一<rt>ぎいち</rt></ruby>",
+bio: "<ruby>陸軍<rt>りくぐん</rt></ruby><ruby>大将<rt>たいしょう</rt></ruby>。<ruby>豪放<rt>ごうほう</rt></ruby><ruby>磊落<rt>らいらく</rt></ruby>な<ruby>性格<rt>せいかく</rt></ruby>で、<ruby>満州<rt>まんしゅう</rt></ruby>の<ruby>権益<rt>けんえき</rt></ruby><ruby>確保<rt>かくほ</rt></ruby>のため<ruby>強硬<rt>きょうこう</rt></ruby>な<ruby>外交<rt>がいこう</rt></ruby><ruby>政策<rt>せいさく</rt></ruby>を<ruby>主張<rt>しゅちょう</rt></ruby>した。彼の強引な<ruby>言動<rt>げんどう</rt></ruby>の<ruby>裏<rt>うら</rt></ruby>には、大切なものを<ruby>守<rt>まも</rt></ruby>り<ruby>抜<rt>ぬ</rt></ruby>こうとする<ruby>揺<rt>ゆ</rt></ruby>るぎない<ruby>信念<rt>しんねん</rt></ruby>が<ruby>隠<rt>かく</rt></ruby>されている。",
+image: "https://placehold.co/150x150/E3C2C2/5D4037?text=田中",
+details: "<ruby>誕生日<rt>たんじょうび</rt></ruby>: 1864年6月25日, <ruby>血液型<rt>けつえきがた</rt></ruby>: B型",
+historical_facts: "【1928年】第1次<ruby>田中<rt>たなか</rt></ruby>内閣時に、<ruby>満州<rt>まんしゅう</rt></ruby>の<ruby>張作霖<rt>ちょうさくりん</rt></ruby>が日本軍によって<ruby>爆殺<rt>ばくさつ</rt></ruby>される<ruby>事件<rt>じけん</rt></ruby>が<ruby>勃発<rt>ぼっぱつ</rt></ruby>。<ruby>事件<rt>じけん</rt></ruby>の<ruby>処理<rt>しょり</rt></ruby>を<ruby>巡<rt>めぐ</rt></ruby>り、<ruby>昭和<rt>しょうわ</rt></ruby><ruby>天皇<rt>てんのう</rt></ruby>から厳しい<ruby>叱責<rt>しっせき</rt></ruby>を<ruby>受<rt>う</rt></ruby>け、内閣は<ruby>総辞職<rt>そうじしょく</rt></ruby>に<ruby>至<rt>いた</rt></ruby>った。"
+}
+};
 
-        // 画面を更新する関数
-        function updateScreen() {
-            const currentScene = story[gameState.progress];
-            const storyTextElem = document.getElementById('story-text');
-            const choicesContainer = document.getElementById('choices-container');
-            const characterNameElem = document.getElementById('character-name');
-            const storyImageElem = document.getElementById('story-image');
-            const statusContainer = document.getElementById('status-container');
+// ストーリーのデータ
+const story = {
+start: {
+text: "華やかな<ruby>大正時代<rt>たいしょうじだい</rt></ruby>、私は名門・<ruby>西園寺<rt>さいおんじ</rt></ruby>家のお<ruby>姫様<rt>ひめさま</rt></ruby>。今日は<ruby>園遊会<rt>えんゆうかい</rt></ruby>に招かれています。豪華なドレスに<ruby>身<rt>み</rt></ruby>を<ruby>包<rt>つつ</rt></ruby>み、<ruby>庭園<rt>ていえん</rt></ruby>へ<ruby>向<rt>む</rt></ruby>かうと、そこで4人の<ruby>男性<rt>だんせい</rt></ruby>と<ruby>出会<rt>であ</rt></ruby>いました。",
+choices: [
+{ text: "<ruby>桂太郎<rt>かつらたろう</rt></ruby>に<ruby>声<rt>こえ</rt></ruby>をかける", next: 'encounter_katsura' },
+{ text: "<ruby>原敬<rt>はらたかし</rt></ruby>に<ruby>声<rt>こえ</rt></ruby>をかける", next: 'encounter_hara' },
+{ text: "<ruby>若槻礼次郎<rt>わかつきれいじろう</rt></ruby>に<ruby>声<rt>こえ</rt></ruby>をかける", next: 'encounter_wakatsuki' },
+{ text: "<ruby>田中義一<rt>たなかぎいち</rt></ruby>に<ruby>声<rt>こえ</rt></ruby>をかける", next: 'encounter_tanaka' },
+{ text: "番外編をプレイする", next: 'extra_episode_start' }
+],
+image: "https://placehold.co/800x350/E8D6E1/5D4037?text=華やかな庭園"
+},
+encounter_katsura: {
+text: "「お<ruby>嬢様<rt>じょうさま</rt></ruby>、この<ruby>桜<rt>さくら</rt></ruby>のように<ruby>可憐<rt>かれん</rt></ruby>なお<ruby>姿<rt>すがた</rt></ruby>…」厳格な<ruby>軍服<rt>ぐんぷく</rt></ruby>に<ruby>身<rt>み</rt></ruby>を<ruby>包<rt>つつ</rt></ruby>んだ<ruby>桂<rt>かつら</rt></ruby>さんが、<ruby>私<rt>わたし</rt></ruby>に<ruby>深々<rt>しんしん</rt></ruby>と<ruby>頭<rt>あたま</rt></ruby>を<ruby>下<rt>さ</rt></ruby>げた。彼の<ruby>言葉<rt>ことば</rt></ruby>に、<ruby>私<rt>わたし</rt></ruby>は少し<ruby>胸<rt>むね</rt></ruby>が<ruby>高鳴<rt>たかな</rt></ruby>った。",
+choices: [
+{ text: "「ありがとうございます、<ruby>桂<rt>かつら</rt></ruby>様もお<ruby>素敵<rt>すてき</rt></ruby>です」と<ruby>微笑<rt>ほほえ</rt></ruby>む", next: 'katsura_story_1', scoreChange: { katsura: 15 } },
+{ text: "「お<ruby>仕事<rt>しごと</rt></ruby>は<ruby>順調<rt>じゅんちょう</rt></ruby>ですか？」と<ruby>話<rt>はな</rt></ruby>しかける", next: 'katsura_story_2', scoreChange: { katsura: 10 } }
+],
+character: "<ruby>桂<rt>かつら</rt> 太郎<rt>たろう</rt></ruby>",
+image: "https://placehold.co/800x350/F5C9C8/5D4037?text=桂太郎とあなた（スチル）"
+},
+katsura_story_1: {
+text: "<ruby>私<rt>わたし</rt></ruby>の<ruby>言葉<rt>ことば</rt></ruby>に、<ruby>桂<rt>かつら</rt></ruby>さんは少し<ruby>照<rt>て</rt></ruby>れたように「お<ruby>褒<rt>ほ</rt></ruby>めいただき<ruby>光栄<rt>こうえい</rt></ruby>です。お<ruby>嬢様<rt>じょうさま</rt></ruby>を<ruby>守<rt>まも</rt></ruby>るためなら、どんな<ruby>困難<rt>こんなん</rt></ruby>も<ruby>乗<rt>の</rt></ruby>り<ruby>越<rt>こ</rt></ruby>えましょう」と力強く<ruby>答<rt>こた</rt></ruby>えてくれた。彼の<ruby>眼差<rt>まなざ</rt></ruby>しは<ruby>真剣<rt>しんけん</rt></ruby>だった。",
+choices: [
+{ text: "「<ruby>大正<rt>たいしょう</rt></ruby><ruby>政変<rt>せいへん</rt></ruby>」について<ruby>尋<rt>たず</rt></ruby>ねる", next: 'katsura_story_1_1', scoreChange: { katsura: 20 } },
+{ text: "「お<ruby>守<rt>まも</rt></ruby>りいただけるなんて、<ruby>光栄<rt>こうえい</rt></ruby>です」と返す", next: 'katsura_story_1_2', scoreChange: { katsura: 25 } }
+],
+character: "<ruby>桂<rt>かつら</rt> 太郎<rt>たろう</rt></ruby>",
+image: "https://placehold.co/800x350/F5C9C8/5D4037?text=桂太郎とあなた（スチル）"
+},
+katsura_story_1_1: {
+text: "「…<ruby>大正<rt>たいしょう</rt></ruby><ruby>政変<rt>せいへん</rt></ruby>は、この<ruby>国<rt>くに</rt></ruby>の<ruby>未来<rt>みらい</rt></ruby>を<ruby>賭<rt>か</rt></ruby>けた<ruby>戦<rt>たたか</rt></ruby>いです。しかし、あなたがいるからこそ、<ruby>私<rt>わたし</rt></ruby>は<ruby>戦<rt>たたか</rt></ruby>えます」彼の<ruby>言葉<rt>ことば</rt></ruby>に、あなたの<ruby>心<rt>こころ</rt></ruby>は<ruby>揺<rt>ゆ</rt></ruby>さぶられる。",
+choices: [
+{ text: "物語の<ruby>終<rt>お</rt></ruby>わりへ", next: 'final_end', scoreChange: { katsura: 20 } }
+],
+character: "<ruby>桂<rt>かつら</rt> 太郎<rt>たろう</rt></ruby>",
+image: "https://placehold.co/800x350/F5C9C8/5D4037?text=桂太郎とあなた（スチル）"
+},
+katsura_story_1_2: {
+text: "「…ええ、<ruby>一生<rt>いっしょう</rt></ruby>をかけて、あなたをお<ruby>守<rt>まも</rt></ruby>りします」彼はそっとあなたの<ruby>手<rt>て</rt></ruby>に<ruby>触<rt>ふ</rt></ruby>れる。その温かさに、あなたは深い<ruby>愛情<rt>あいじょう</rt></ruby>を<ruby>感<rt>かん</rt></ruby>じた。",
+choices: [
+{ text: "物語の<ruby>終<rt>お</rt></ruby>わりへ", next: 'final_end', scoreChange: { katsura: 30 } }
+],
+character: "<ruby>桂<rt>かつら</rt> 太郎<rt>たろう</rt></ruby>",
+image: "https://placehold.co/800x350/F5C9C8/5D4037?text=桂太郎とあなた（スチル）"
+},
+encounter_hara: {
+text: "「おや、お<ruby>嬢様<rt>じょうさま</rt></ruby>。このような<ruby>場所<rt>ばしょ</rt></ruby>で<ruby>会<rt>あ</rt></ruby>うのは<ruby>珍<rt>めずら</rt></ruby>しいですな。<ruby>私<rt>わたし</rt></ruby>は<ruby>原<rt>はら</rt></ruby><ruby>敬<rt>たかし</rt></ruby>と<ruby>申<rt>もう</rt></ruby>します。<ruby>平民<rt>へいみん</rt></ruby>ですが、お<ruby>嬢様<rt>じょうさま</rt></ruby>のお<ruby>役<rt>やく</rt></ruby>に<ruby>立<rt>た</rt></ruby>てることがあるかもしれません」と、彼は<ruby>気<rt>き</rt></ruby>さくに<ruby>話<rt>はな</rt></ruby>しかけてきた。",
+choices: [
+{ text: "「<ruby>平民<rt>へいみん</rt></ruby><ruby>宰相<rt>さいしょう</rt></ruby><ruby>様<rt>さま</rt></ruby>ですね、<ruby>存<rt>ぞん</rt></ruby>じ<ruby>上<rt>あ</rt></ruby>げております」と<ruby>答<rt>こた</rt></ruby>える", next: 'hara_story_1', scoreChange: { hara: 15 } },
+{ text: "「あなたのような<ruby>方<rt>かた</rt></ruby>と<ruby>話<rt>はな</rt></ruby>すのは<ruby>初<rt>はじ</rt></ruby>めてです」と<ruby>正直<rt>しょうじき</rt></ruby>に<ruby>伝<rt>つた</rt></ruby>える", next: 'hara_story_2', scoreChange: { hara: 10 } }
+],
+character: "<ruby>原<rt>はら</rt> 敬<rt>たかし</rt></ruby>",
+image: "https://placehold.co/800x350/B8E8B8/5D4037?text=原敬とあなた（スチル）"
+},
+hara_story_1: {
+text: "「<ruby>平民<rt>へいみん</rt></ruby>の<ruby>私<rt>わたし</rt></ruby>でも、お<ruby>嬢様<rt>じょうさま</rt></ruby>のようなお<ruby>方<rt>かた</rt></ruby>と<ruby>話<rt>はな</rt></ruby>せる<ruby>時代<rt>じだい</rt></ruby>になった。これは<ruby>良<rt>よ</rt></ruby>い<ruby>時代<rt>じだい</rt></ruby>ですな」あなたの<ruby>言葉<rt>ことば</rt></ruby>に、<ruby>原<rt>はら</rt></ruby>さんは<ruby>嬉<rt>うれ</rt></ruby>しそうに<ruby>笑<rt>わら</rt></ruby>った。彼の穏やかな<ruby>笑顔<rt>えがお</rt></ruby>に、<ruby>私<rt>わたし</rt></ruby>は<ruby>安堵<rt>あんど</rt></ruby>した。",
+choices: [
+{ text: "「<ruby>米騒動<rt>こめそうどう</rt></ruby>」について<ruby>尋<rt>たず</rt></ruby>ねる", next: 'hara_story_1_1', scoreChange: { hara: 20 } },
+{ text: "「はい、とても<ruby>良<rt>よ</rt></ruby>い<ruby>時代<rt>じだい</rt></ruby>ですね」と<ruby>同意<rt>どうい</rt></ruby>する", next: 'hara_story_1_2', scoreChange: { hara: 25 } }
+],
+character: "<ruby>原<rt>はら</rt> 敬<rt>たかし</rt></ruby>",
+image: "https://placehold.co/800x350/B8E8B8/5D4037?text=原敬とあなた（スチル）"
+},
+hara_story_1_1: {
+text: "「…<ruby>米騒動<rt>こめそうどう</rt></ruby>は、<ruby>民衆<rt>みんしゅう</rt></ruby>の<ruby>苦<rt>くる</rt></ruby>しみの<ruby>声<rt>こえ</rt></ruby>です。<ruby>私<rt>わたし</rt></ruby>はその<ruby>声<rt>こえ</rt></ruby>を<ruby>無視<rt>むし</rt></ruby>できません。お<ruby>嬢様<rt>じょうさま</rt></ruby>にも、<ruby>民衆<rt>みんしゅう</rt></ruby>の<ruby>暮<rt>く</rt></ruby>らしを<ruby>理解<rt>りかい</rt></ruby>していただきたい」彼の<ruby>真摯<rt>しんし</rt></ruby>な<ruby>眼差<rt>まなざ</rt></ruby>しに、あなたは<ruby>心<rt>こころ</rt></ruby>を<ruby>動<rt>うご</rt></ruby>かされた。",
+choices: [
+{ text: "物語の<ruby>終<rt>お</rt></ruby>わりへ", next: 'final_end', scoreChange: { hara: 20 } }
+],
+character: "<ruby>原<rt>はら</rt> 敬<rt>たかし</rt></ruby>",
+image: "https://placehold.co/800x350/B8E8B8/5D4037?text=原敬とあなた（スチル）"
+},
+hara_story_1_2: {
+text: "「…ありがとうございます。お<ruby>嬢様<rt>じょうさま</rt></ruby>のような<ruby>方<rt>かた</rt></ruby>がいてくだされば、この<ruby>国<rt>くに</rt></ruby>はもっと<ruby>良<rt>よ</rt></ruby>くなります」彼はあなたの<ruby>手<rt>て</rt></ruby>を<ruby>取<rt>と</rt></ruby>り、<ruby>深<rt>ふか</rt></ruby>く<ruby>頭<rt>あたま</rt></ruby>を<ruby>下<rt>さ</rt></ruby>げた。あなたの<ruby>心<rt>こころ</rt></ruby>に<ruby>温<rt>あたた</rt></ruby>かい<ruby>感情<rt>かんじょう</rt></ruby>が<ruby>広<rt>ひろ</rt></ruby>がった。",
+choices: [
+{ text: "物語の<ruby>終<rt>お</rt></ruby>わりへ", next: 'final_end', scoreChange: { hara: 30 } }
+],
+character: "<ruby>原<rt>はら</rt> 敬<rt>たかし</rt></ruby>",
+image: "https://placehold.co/800x350/B8E8B8/5D4037?text=原敬とあなた（スチル）"
+},
+encounter_wakatsuki: {
+text: "「おや、<ruby>西園寺<rt>さいおんじ</rt></ruby>のお<ruby>嬢様<rt>じょうさま</rt></ruby>。<ruby>私<rt>わたし</rt></ruby>は<ruby>若槻<rt>わかつき</rt></ruby>と<ruby>申<rt>もう</rt></ruby>します。<ruby>今度<rt>こんど</rt></ruby>の<ruby>外交<rt>がいこう</rt></ruby>には<ruby>苦慮<rt>くりょ</rt></ruby>しておりまして…」彼は少し<ruby>困<rt>こま</rt></ruby>った<ruby>顔<rt>かお</rt></ruby>で<ruby>私<rt>わたし</rt></ruby>に<ruby>話<rt>はな</rt></ruby>しかけた。彼の<ruby>眉間<rt>みけん</rt></ruby>のしわが、<ruby>苦労<rt>くろう</rt></ruby>を<ruby>物語<rt>ものがた</rt></ruby>っているようだった。",
+choices: [
+{ text: "「<ruby>何<rt>なに</rt></ruby>かお<ruby>手伝<rt>てつだ</rt></ruby>いできることは？」と<ruby>尋<rt>たず</rt></ruby>ねる", next: 'wakatsuki_story_1', scoreChange: { wakatsuki: 15 } },
+{ text: "「きっとうまくいきますよ」と<ruby>励<rt>はげ</rt></ruby>ます", next: 'wakatsuki_story_2', scoreChange: { wakatsuki: 10 } }
+],
+character: "<ruby>若槻<rt>わかつき</rt> 礼次郎<rt>れいじろう</rt></ruby>",
+image: "https://placehold.co/800x350/D4B8E1/5D4037?text=若槻礼次郎とあなた（スチル）"
+},
+wakatsuki_story_1: {
+text: "「ありがとうございます。お<ruby>嬢様<rt>じょうさま</rt></ruby>の<ruby>優<rt>やさ</rt></ruby>しさが、<ruby>私<rt>わたし</rt></ruby>の<ruby>心<rt>こころ</rt></ruby>に<ruby>沁<rt>し</rt></ruby>み<ruby>渡<rt>わた</rt></ruby>ります」<ruby>私<rt>わたし</rt></ruby>の<ruby>言葉<rt>ことば</rt></ruby>に、彼は<ruby>顔<rt>かお</rt></ruby>を<ruby>輝<rt>かがや</rt></ruby>かせた。「<ruby>共<rt>とも</rt></ruby>に<ruby>平和<rt>へいわ</rt></ruby>な<ruby>未来<rt>みらい</rt></ruby>を<ruby>目指<rt>めざ</rt></ruby>しましょう」彼は<ruby>私<rt>わたし</rt></ruby>の<ruby>手<rt>て</rt></ruby>をそっと<ruby>握<rt>にぎ</rt></ruby>り、その温かさに<ruby>私<rt>わたし</rt></ruby>は<ruby>安<rt>やす</rt></ruby>らぎを<ruby>感<rt>かん</rt></ruby>じた。",
+choices: [
+{ text: "「<ruby>協調<rt>きょうちょう</rt></ruby><ruby>外交<rt>がいこう</rt></ruby>」について<ruby>尋<rt>たず</rt></ruby>ねる", next: 'wakatsuki_story_1_1', scoreChange: { wakatsuki: 20 } },
+{ text: "「はい、<ruby>平和<rt>へいわ</rt></ruby>な<ruby>未来<rt>みらい</rt></ruby>を<ruby>信<rt>しん</rt></ruby>じます」と<ruby>応<rt>こた</rt></ruby>える", next: 'wakatsuki_story_1_2', scoreChange: { wakatsuki: 25 } }
+],
+character: "<ruby>若槻<rt>わかつき</rt> 礼次郎<rt>れいじろう</rt></ruby>",
+image: "https://placehold.co/800x350/D4B8E1/5D4037?text=若槻礼次郎とあなた（スチル）"
+},
+wakatsuki_story_1_1: {
+text: "「…<ruby>協調<rt>きょうちょう</rt></ruby><ruby>外交<rt>がいこう</rt></ruby>は、<ruby>困難<rt>こんなん</rt></ruby>を<ruby>伴<rt>ともな</rt></ruby>いますが、<ruby>戦争<rt>せんそう</rt></ruby>を<ruby>避<rt>さ</rt></ruby>けるための<ruby>唯一<rt>ゆいいつ</rt></ruby>の<ruby>道<rt>みち</rt></ruby>です。<ruby>私<rt>わたし</rt></ruby>は、この<ruby>道<rt>みち</rt></ruby>を<ruby>歩<rt>あゆ</rt></ruby>み<ruby>続<rt>つづ</rt></ruby>けます」彼は<ruby>静<rt>しず</rt></ruby>かに、しかし<ruby>力強<rt>ちからづよ</rt></ruby>く<ruby>語<rt>かた</rt></ruby>った。",
+choices: [
+{ text: "物語の<ruby>終<rt>お</rt></ruby>わりへ", next: 'final_end', scoreChange: { wakatsuki: 20 } }
+],
+character: "<ruby>若槻<rt>わかつき</rt> 礼次郎<rt>れいじろう</rt></ruby>",
+image: "https://placehold.co/800x350/D4B8E1/5D4037?text=若槻礼次郎とあなた（スチル）"
+},
+wakatsuki_story_1_2: {
+text: "「…あなたの<ruby>言葉<rt>ことば</rt></ruby>が、<ruby>私<rt>わたし</rt></ruby>の<ruby>支<rt>ささ</rt></ruby>えです。どんな<ruby>困難<rt>こんなん</rt></ruby>も、あなたと<ruby>一緒<rt>いっしょ</rt></ruby>なら<ruby>乗<rt>の</rt></ruby>り<ruby>越<rt>こ</rt></ruby>えられます」彼の<ruby>表情<rt>ひょうじょう</rt></ruby>は<ruby>安堵<rt>あんど</rt></ruby>に<ruby>満<rt>み</rt></ruby>ちていた。",
+choices: [
+{ text: "物語の<ruby>終<rt>お</rt></ruby>わりへ", next: 'final_end', scoreChange: { wakatsuki: 30 } }
+],
+character: "<ruby>若槻<rt>わかつき</rt> 礼次郎<rt>れいじろう</rt></ruby>",
+image: "https://placehold.co/800x350/D4B8E1/5D4037?text=若槻礼次郎とあなた（スチル）"
+},
+encounter_tanaka: {
+text: "「ほう、お<ruby>嬢様<rt>じょうさま</rt></ruby>ですかな。<ruby>俺<rt>おれ</rt></ruby>は<ruby>田中<rt>たなか</rt></ruby><ruby>義一<rt>ぎいち</rt></ruby>だ。<ruby>平和<rt>へいわ</rt></ruby>だの<ruby>協調<rt>きょうちょう</rt></ruby>だのと言っている<ruby>暇<rt>ひま</rt></ruby>はねぇ。力で<ruby>満州<rt>まんしゅう</rt></ruby>の<ruby>権益<rt>けんえき</rt></ruby>は<ruby>守<rt>まも</rt></ruby>る。<ruby>俺<rt>おれ</rt></ruby>についてくれば、<ruby>退屈<rt>たいくつ</rt></ruby>はさせねぇぜ」彼は<ruby>私<rt>わたし</rt></ruby>の<ruby>目<rt>め</rt></ruby>をまっすぐに<ruby>見<rt>み</rt></ruby>て、<ruby>挑戦的<rt>ちょうせんてき</rt></ruby>な<ruby>笑<rt>え</rt></ruby>みを<ruby>浮<rt>う</rt></ruby>かべた。彼の<ruby>強引<rt>ごういん</rt></ruby>さに、<ruby>私<rt>わたし</rt></ruby>は少し<ruby>戸惑<rt>とまど</rt></ruby>いつつも、<ruby>目<rt>め</rt></ruby>を<ruby>離<rt>はな</rt></ruby>せなかった。",
+choices: [
+{ text: "「お<ruby>言葉<rt>ことば</rt></ruby>ですが、力だけでは<ruby>何<rt>なに</rt></ruby>も<ruby>解決<rt>かいけつ</rt></ruby>しません」と<ruby>反論<rt>はんろん</rt></ruby>する", next: 'tanaka_story_1', scoreChange: { tanaka: 15 } },
+{ text: "「あなたのような<ruby>方<rt>かた</rt></ruby>は<ruby>初<rt>はじ</rt></ruby>めてです…」と<ruby>正直<rt>しょうじき</rt></ruby>に<ruby>伝<rt>つた</rt></ruby>える", next: 'tanaka_story_2', scoreChange: { tanaka: 10 } }
+],
+character: "<ruby>田中<rt>たなか</rt> 義一<rt>ぎいち</rt></ruby>",
+image: "https://placehold.co/800x350/E3C2C2/5D4037?text=田中義一とあなた（スチル）"
+},
+tanaka_story_1: {
+text: "「<ruby>面白<rt>おもしろ</rt></ruby>い。<ruby>俺<rt>おれ</rt></ruby>の<ruby>考<rt>かんが</rt></ruby>えに<ruby>反論<rt>はんろん</rt></ruby>するとはな」彼はニヤリと<ruby>笑<rt>わら</rt></ruby>った。「だが、それがお<ruby>嬢様<rt>じょうさま</rt></ruby>の<ruby>想<rt>おも</rt></ruby>いなら、少しは<ruby>考<rt>かんが</rt></ruby>えてやろう」彼の<ruby>心<rt>こころ</rt></ruby>に、わずかな<ruby>変化<rt>へんか</rt></ruby>が<ruby>生<rt>う</rt></ruby>まれた<ruby>気<rt>き</rt></ruby>がした。",
+choices: [
+{ text: "「<ruby>山東<rt>さんとう</rt></ruby><ruby>出兵<rt>しゅっぺい</rt></ruby>」について<ruby>尋<rt>たず</rt></ruby>ねる", next: 'tanaka_story_1_1', scoreChange: { tanaka: 20 } },
+{ text: "「<ruby>私<rt>わたし</rt></ruby>と<ruby>一緒<rt>いっしょ</rt></ruby>なら、<ruby>別<rt>べつ</rt></ruby>の<ruby>道<rt>みち</rt></ruby>が<ruby>見<rt>み</rt></ruby>つかるはずです」と<ruby>伝<rt>つた</rt></ruby>える", next: 'tanaka_story_1_2', scoreChange: { tanaka: 25 } }
+],
+character: "<ruby>田中<rt>たなか</rt> 義一<rt>ぎいち</rt></ruby>",
+image: "https://placehold.co/800x350/E3C2C2/5D4037?text=田中義一とあなた（スチル）"
+},
+tanaka_story_1_1: {
+text: "「…<ruby>山東<rt>さんとう</rt></ruby><ruby>出兵<rt>しゅっぺい</rt></ruby>は、<ruby>日本<rt>にほん</rt></ruby>の<ruby>未来<rt>みらい</rt></ruby>のためだ。だが、お<ruby>前<rt>まえ</rt></ruby>がそれを<ruby>望<rt>のぞ</rt></ruby>まないなら…」彼は少し<ruby>戸惑<rt>とまど</rt></ruby>った<ruby>様子<rt>ようす</rt></ruby>を<ruby>見<rt>み</rt></ruby>せた。あなたの<ruby>言葉<rt>ことば</rt></ruby>が、彼の<ruby>心<rt>こころ</rt></ruby>を少しずつ<ruby>変<rt>か</rt></ruby>えていく。",
+choices: [
+{ text: "物語の<ruby>終<rt>お</rt></ruby>わりへ", next: 'final_end', scoreChange: { tanaka: 20 } }
+],
+character: "<ruby>田中<rt>たなか</rt> 義一<rt>ぎいち</rt></ruby>",
+image: "https://placehold.co/800x350/E3C2C2/5D4037?text=田中義一とあなた（スチル）"
+},
+tanaka_story_1_2: {
+text: "「…フン。そうか。お<ruby>前<rt>まえ</rt></ruby>と<ruby>一緒<rt>いっしょ</rt></ruby>なら、<ruby>面白<rt>おもしろ</rt></ruby>いことができそうだ」彼はあなたの<ruby>言葉<rt>ことば</rt></ruby>を<ruby>気<rt>き</rt></ruby>に<ruby>入<rt>い</rt></ruby>り、<ruby>豪快<rt>ごうかい</rt></ruby>に<ruby>笑<rt>わら</rt></ruby>った。彼の<ruby>笑顔<rt>えがお</rt></ruby>に、あなたは<ruby>魅了<rt>みりょう</rt></ruby>された。",
+choices: [
+{ text: "物語の<ruby>終<rt>お</rt></ruby>わりへ", next: 'final_end', scoreChange: { tanaka: 30 } }
+],
+character: "<ruby>田中<rt>たなか</rt> 義一<rt>ぎいち</rt></ruby>",
+image: "https://placehold.co/800x350/E3C2C2/5D4037?text=田中義一とあなた（スチル）"
+},
+final_end: {
+text: "物語の<ruby>終<rt>お</rt></ruby>わりです。<ruby>親愛度<rt>しんあいど</rt></ruby>の<ruby>合計<rt>ごうけい</rt></ruby>に<ruby>基<rt>もと</rt></ruby>づいて、あなたと<ruby>最<rt>もっと</rt></ruby>も<ruby>親密<rt>しんみつ</rt></ruby>になった<ruby>人物<rt>じんぶつ</rt></ruby>が<ruby>決<rt>き</rt></ruby>まります。",
+choices: [], // choices will be dynamically generated
+image: "https://placehold.co/800x350/FFC0CB/5D4037?text=物語の終わり"
+},
+// ここから番外編のシナリオ
+extra_episode_start: {
+text: "ここは<ruby>鹿鳴館<rt>ろくめいかん</rt></ruby>の<ruby>応接室<rt>おうせつしつ</rt></ruby>。あなたは<ruby>日本<rt>にほん</rt></ruby>の<ruby>未来<rt>みらい</rt></ruby>について<ruby>議論<rt>ぎろん</rt></ruby>する<ruby>円卓<rt>えんたく</rt></ruby>会議に招かれました。そこに<ruby>現<rt>あらわ</rt></ruby>れたのは、<ruby>歴史<rt>れきし</rt></ruby>を動かしてきた4人の<ruby>人物<rt>じんぶつ</rt></ruby>でした。",
+choices: [
+{ text: "彼らの<ruby>話<rt>はなし</rt></ruby>を<ruby>聞<rt>き</rt></ruby>く", next: 'extra_episode_intro' }
+],
+image: "https://placehold.co/800x350/F8D7C8/5D4037?text=鹿鳴館の応接室"
+},
+extra_episode_intro: {
+text: "それぞれの<ruby>思惑<rt>おもわく</rt></ruby>が<ruby>交錯<rt>こうさく</rt></ruby>する<ruby>中<rt>なか</rt></ruby>、一人の<ruby>男性<rt>だんせい</rt></ruby>が<ruby>口<rt>くち</rt></ruby>を<ruby>開<rt>ひら</rt></ruby>きました。「<ruby>大戦<rt>たいせん</rt></ruby><ruby>景気<rt>けいき</rt></ruby>という<ruby>言葉<rt>ことば</rt></ruby>を<ruby>耳<rt>みみ</rt></ruby>にしましたか？これは<ruby>第一次世界大戦<rt>だいいちじせかいたいせん</rt></ruby>をきっかけに、<ruby>日本<rt>にほん</rt></ruby>が<ruby>空前<rt>くうぜん</rt></ruby>の<ruby>好景気<rt>こうけいき</rt></ruby>を<ruby>迎<rt>むか</rt></ruby>えたことです。」",
+choices: [
+{ text: "「<ruby>景気<rt>けいき</rt></ruby>の<ruby>良<rt>よ</rt></ruby>い<ruby>話<rt>はなし</rt></ruby>ですね」と<ruby>微笑<rt>ほほえ</rt></ruby>む", next: 'extra_episode_topic_1' },
+{ text: "「<ruby>具体<rt>ぐたい</rt></ruby>的には、どのような<ruby>産業<rt>さんぎょう</rt></ruby>が<ruby>潤<rt>うるお</rt></ruby>ったのですか？」と<ruby>尋<rt>たず</rt></ruby>ねる", next: 'extra_episode_topic_1_details' }
+],
+character: "<ruby>原<rt>はら</rt> 敬<rt>たかし</rt></ruby>",
+image: "https://placehold.co/800x350/F8D7C8/5D4037?text=鹿鳴館の応接室"
+},
+extra_episode_topic_1: {
+text: "<ruby>原<rt>はら</rt></ruby>「ええ、まさに！ヨーロッパが<ruby>戦争<rt>せんそう</rt></ruby>で<ruby>疲弊<rt>ひへい</rt></ruby>する<ruby>中<rt>なか</rt></ruby>、<ruby>日本<rt>にほん</rt></ruby>はアジア<ruby>市場<rt>しじょう</rt></ruby>での<ruby>輸出<rt>ゆしゅつ</rt></ruby>を<ruby>伸<rt>の</rt></ruby>ばし、<ruby>巨額<rt>きょがく</rt></ruby>の<ruby>利益<rt>りえき</rt></ruby>を<ruby>上<rt>あ</rt></ruby>げました。それまで<ruby>借金<rt>しゃっきん</rt></ruby>があった<ruby>国<rt>くに</rt></ruby>が、<ruby>逆<rt>ぎゃく</rt></ruby>に<ruby>諸外国<rt>しょがいこく</rt></ruby>にお<ruby>金<rt>かね</rt></ruby>を<ruby>貸<rt>か</rt></ruby>すまでになったのです。」",
+choices: [
+{ text: "「すごいですね！」と<ruby>感嘆<rt>かんたん</rt></ruby>する", next: 'extra_episode_topic_2' },
+{ text: "「<ruby>輸出<rt>ゆしゅつ</rt></ruby>が<ruby>好調<rt>こうちょう</rt></ruby>だったのは、なぜでしょうか？」と<ruby>尋<rt>たず</rt></ruby>ねる", next: 'extra_episode_topic_1_details' }
+],
+character: "<ruby>原<rt>はら</rt> 敬<rt>たかし</rt></ruby>",
+image: "https://placehold.co/800x350/B8E8B8/5D4037?text=原敬とあなた（スチル）"
+},
+extra_episode_topic_1_details: {
+text: "<ruby>原<rt>はら</rt></ruby>「特に<ruby>綿織物<rt>めんおりもの</rt></ruby>や<ruby>生糸<rt>きいと</rt></ruby>の<ruby>輸出<rt>ゆしゅつ</rt></ruby>が<ruby>好調<rt>こうちょう</rt></ruby>でした。ヨーロッパ<ruby>諸国<rt>しょこく</rt></ruby>が<ruby>戦争<rt>せんそう</rt></ruby>のためにアジア<ruby>市場<rt>しじょう</rt></ruby>から<ruby>撤退<rt>てったい</rt></ruby>した<ruby>隙<rt>すき</rt></ruby>を<ruby>突<rt>つ</rt></ruby>いて、<ruby>日本<rt>にほん</rt></ruby><ruby>製品<rt>せいひん</rt></ruby>が<ruby>圧倒的<rt>あっとうてき</rt></ruby>なシェアを<ruby>獲得<rt>かくとく</rt></ruby>したのです。」",
+choices: [
+{ text: "「<ruby>造船業<rt>ぞうせんぎょう</rt></ruby>はどうでしたか？」と<ruby>質問<rt>しつもん</rt></ruby>する", next: 'extra_episode_topic_2' }
+],
+character: "<ruby>原<rt>はら</rt> 敬<rt>たかし</rt></ruby>",
+image: "https://placehold.co/800x350/B8E8B8/5D4037?text=原敬とあなた（スチル）"
+},
+extra_episode_topic_2: {
+text: "<ruby>若槻<rt>わかつき</rt></ruby>「<ruby>船舶<rt>せんぱく</rt></ruby><ruby>不足<rt>ふそく</rt></ruby>のため、<ruby>造船業<rt>ぞうせんぎょう</rt></ruby>も<ruby>大変<rt>たいへん</rt></ruby>な<ruby>好況<rt>こうきょう</rt></ruby>でしたね。<ruby>船<rt>ふね</rt></ruby>を<ruby>造<rt>つく</rt></ruby>れば<ruby>造<rt>つく</rt></ruby>るほど<ruby>儲<rt>もう</rt></ruby>かる<ruby>時代<rt>じだい</rt></ruby>で、<ruby>中<rt>なか</rt></ruby>には<ruby>一気<rt>いっき</rt></ruby>に<ruby>財<rt>ざい</rt></ruby>を<ruby>成<rt>な</rt></ruby>し、『<ruby>船<rt>ふね</rt></ruby><ruby>成金<rt>なりきん</rt></ruby>』と<ruby>呼<rt>よ</rt></ruby>ばれる<ruby>者<rt>もの</rt></ruby>も<ruby>現<rt>あらわ</rt></ruby>れました。」彼の<ruby>言葉<rt>ことば</rt></ruby>は、少し<ruby>憂鬱<rt>ゆううつ</rt></ruby>そうに聞こえました。",
+choices: [
+{ text: "「ですが、その後の<ruby>不況<rt>ふきょう</rt></ruby>が…」と<ruby>続<rt>つづ</rt></ruby>ける", next: 'extra_episode_topic_3' },
+{ text: "「<ruby>新<rt>あたら</rt></ruby>しい<ruby>船<rt>ふね</rt></ruby>を<ruby>造<rt>つく</rt></ruby>るのは、<ruby>素敵<rt>すてき</rt></ruby>なことですね」と<ruby>話<rt>はな</rt></ruby>す", next: 'extra_episode_topic_2_optimistic' }
+],
+character: "<ruby>若槻<rt>わかつき</rt> 礼次郎<rt>れいじろう</rt></ruby>",
+image: "https://placehold.co/800x350/D4B8E1/5D4037?text=若槻礼次郎とあなた（スチル）"
+},
+extra_episode_topic_2_optimistic: {
+text: "<ruby>若槻<rt>わかつき</rt></ruby>「…ええ、そうですね。<ruby>平和<rt>へいわ</rt></ruby>な<ruby>時代<rt>じだい</rt></ruby>なら、それが<ruby>何<rt>なに</rt></ruby>よりです。しかし、<ruby>戦争<rt>せんそう</rt></ruby><ruby>景気<rt>けいき</rt></ruby>はいつか<ruby>必<rt>かなら</rt></ruby>ず<ruby>終<rt>お</rt></ruby>わります。<ruby>私<rt>わたし</rt></ruby>はその後の<ruby>国際<rt>こくさい</rt></ruby><ruby>協調<rt>きょうちょう</rt></ruby>こそが<ruby>大切<rt>たいせつ</rt></ruby>だと<ruby>考<rt>かんが</rt></ruby>えています。」彼の<ruby>眼差<rt>まなざ</rt></ruby>しは<ruby>真剣<rt>しんけん</rt></ruby>だった。",
+choices: [
+{ text: "「<ruby>不況<rt>ふきょう</rt></ruby>の<ruby>原因<rt>げんいん</rt></ruby>は<ruby>何<rt>なに</rt></ruby>でしょうか？」と<ruby>尋<rt>たず</rt></ruby>ねる", next: 'extra_episode_topic_3' }
+],
+character: "<ruby>若槻<rt>わかつき</rt> 礼次郎<rt>れいじろう</rt></ruby>",
+image: "https://placehold.co/800x350/D4B8E1/5D4037?text=若槻礼次郎とあなた（スチル）"
+},
+extra_episode_topic_3: {
+text: "<ruby>田中<rt>たなか</rt></ruby>「フン…<ruby>大戦<rt>たいせん</rt></ruby><ruby>景気<rt>けいき</rt></ruby>の後の<ruby>戦後<rt>せんご</rt></ruby><ruby>恐慌<rt>きょうこう</rt></ruby>だ。さらに1923<ruby>年<rt>ねん</rt></ruby>の<ruby>関東大震災<rt>かんとうだいしんさい</rt></ruby>による<ruby>震災<rt>しんさい</rt></ruby><ruby>手形<rt>てがた</rt></ruby>の<ruby>問題<rt>もんだい</rt></ruby>が<ruby>重<rt>かさ</rt></ruby>なり、<ruby>不況<rt>ふきょう</rt></ruby>はさらに<ruby>深刻<rt>しんこく</rt></ruby>になった。<ruby>政府<rt>せいふ</rt></ruby>の<ruby>対応<rt>たいおう</rt></ruby>が<ruby>甘<rt>あま</rt></ruby>かったのだ。」<ruby>田中<rt>たなか</rt></ruby>さんが<ruby>苦々<rt>にがにが</rt></ruby>しげに<ruby>言<rt>い</rt></ruby>いました。彼は<ruby>若槻<rt>わかつき</rt></ruby>さんの<ruby>協調<rt>きょうちょう</rt></ruby><ruby>外交<rt>がいこう</rt></ruby>を<ruby>批判<rt>ひはん</rt></ruby>しているようです。",
+choices: [
+{ text: "「<ruby>震災<rt>しんさい</rt></ruby><ruby>手形<rt>てがた</rt></ruby>とは<ruby>何<rt>なに</rt></ruby>ですか？」と<ruby>質問<rt>しつもん</rt></ruby>する", next: 'extra_episode_topic_4' },
+{ text: "「力による<ruby>解決<rt>かいけつ</rt></ruby>が<ruby>必要<rt>ひつよう</rt></ruby>だとお<ruby>考<rt>かんが</rt></ruby>えですか？」と<ruby>尋<rt>たず</rt></ruby>ねる", next: 'extra_episode_topic_3_aggressive' }
+],
+character: "<ruby>田中<rt>たなか</rt> 義一<rt>ぎいち</rt></ruby>",
+image: "https://placehold.co/800x350/E3C2C2/5D4037?text=田中義一とあなた（スチル）"
+},
+extra_episode_topic_3_aggressive: {
+text: "<ruby>田中<rt>たなか</rt></ruby>「<ruby>当<rt>あ</rt></ruby>たり<ruby>前<rt>まえ</rt></ruby>だ。<ruby>危機<rt>きき</rt></ruby>に<ruby>瀕<rt>ひん</rt></ruby>したときは、<ruby>弱腰<rt>よわごし</rt></ruby>な<ruby>協調<rt>きょうちょう</rt></ruby>など<ruby>無意味<rt>むいみ</rt></ruby>。<ruby>国益<rt>こくえき</rt></ruby>のためには、<ruby>時<rt>とき</rt></ruby>に<ruby>断固<rt>だんこ</rt></ruby>たる<ruby>措置<rt>そち</rt></ruby>が<ruby>必要<rt>ひつよう</rt></ruby>なのだ。」彼の<ruby>言葉<rt>ことば</rt></ruby>には、<ruby>揺<rt>ゆ</rt></ruby>るぎない<ruby>信念<rt>しんねん</rt></ruby>が<ruby>感<rt>かん</rt></ruby>じられた。",
+choices: [
+{ text: "「<ruby>震災<rt>しんさい</rt></ruby><ruby>手形<rt>てがた</rt></ruby>について<ruby>教<rt>おし</rt></ruby>えてください」と<ruby>話<rt>はな</rt></ruby>を<ruby>変<rt>か</rt></ruby>える", next: 'extra_episode_topic_4' }
+],
+character: "<ruby>田中<rt>たなか</rt> 義一<rt>ぎいち</rt></ruby>",
+image: "https://placehold.co/800x350/E3C2C2/5D4037?text=田中義一とあなた（スチル）"
+},
+extra_episode_topic_4: {
+text: "<ruby>原<rt>はら</rt></ruby>「<ruby>大震災<rt>だいしんさい</rt></ruby>で、<ruby>多<rt>おお</rt></ruby>くの<ruby>企業<rt>きぎょう</rt></ruby>が<ruby>銀行<rt>ぎんこう</rt></ruby>から<ruby>借<rt>か</rt></ruby>りたお<ruby>金<rt>かね</rt></ruby>を<ruby>返<rt>かえ</rt></ruby>せなくなりました。その<ruby>借金<rt>しゃっきん</rt></ruby>の<ruby>証書<rt>しょうしょ</rt></ruby>が『<ruby>震災<rt>しんさい</rt></ruby><ruby>手形<rt>てがた</rt></ruby>』です。<ruby>政府<rt>せいふ</rt></ruby>は、<ruby>日本銀行<rt>にほんぎんこう</rt></ruby>がその<ruby>手形<rt>てがた</rt></ruby>を<ruby>買<rt>か</rt></ruby>い<ruby>取<rt>と</rt></ruby>ることで、<ruby>銀行<rt>ぎんこう</rt></ruby>を<ruby>救済<rt>きゅうさい</rt></ruby>しようとしましたが、これがかえって<ruby>金融<rt>きんゆう</rt></ruby><ruby>不安<rt>ふあん</rt></ruby>を<ruby>招<rt>まね</rt></ruby>いてしまったのです。」<ruby>原<rt>はら</rt></ruby>さんが<ruby>丁寧<rt>ていねい</rt></ruby>に、しかし<ruby>難<rt>むずか</rt></ruby>しい<ruby>顔<rt>かお</rt></ruby>で<ruby>説明<rt>せつめい</rt></ruby>してくれました。",
+choices: [
+{ text: "「ありがとうございました」と<ruby>感謝<rt>かんしゃ</rt></ruby>を<ruby>伝<rt>つた</rt></ruby>える", next: 'extra_episode_end' }
+],
+character: "<ruby>原<rt>はら</rt> 敬<rt>たかし</rt></ruby>",
+image: "https://placehold.co/800x350/B8E8B8/5D4037?text=原敬とあなた（スチル）"
+},
+extra_episode_end: {
+text: "<ruby>様々<rt>さまざま</rt></ruby>な<ruby>思惑<rt>おもわく</rt></ruby>が<ruby>交錯<rt>こうさく</rt></ruby>する<ruby>円卓<rt>えんたく</rt></ruby>会議。あなたは彼らの<ruby>話<rt>はなし</rt></ruby>を<ruby>聞<rt>き</rt></ruby>き、この<ruby>時代<rt>じだい</rt></ruby>の<ruby>光<rt>ひかり</rt></ruby>と<ruby>影<rt>かげ</rt></ruby>を<ruby>垣間見<rt>かいまみ</rt></ruby>ました。この<ruby>経験<rt>けいけん</rt></ruby>は、あなたの<ruby>心<rt>こころ</rt></ruby>に<ruby>深<rt>ふか</rt></ruby>く<ruby>刻<rt>きざ</rt></ruby>み<ruby>込<rt>こ</rt></ruby>まれることでしょう。",
+choices: [
+{ text: "<ruby>最初<rt>さいしょ</rt></ruby>に<ruby>戻<rt>もど</rt></ruby>る", next: 'start' }
+],
+image: "https://placehold.co/800x350/FFC0CB/5D4037?text=物語の終わり"
+},
+};
 
-            if (gameState.progress === 'final_end') {
-                // 親愛度を計算して最終結果を表示する
-                let maxScore = 0;
-                let favoriteCharacter = null;
-                const characterNames = {
-                    katsura: "桂 太郎",
-                    hara: "原 敬",
-                    wakatsuki: "若槻 礼次郎",
-                    tanaka: "田中 義一"
-                };
+// 画面を更新する関数
+function updateScreen() {
+const currentScene = story[gameState.progress];
+const storyTextElem = document.getElementById('story-text');
+const choicesContainer = document.getElementById('choices-container');
+const characterNameElem = document.getElementById('character-name');
+const storyImageElem = document.getElementById('story-image');
+const statusContainer = document.getElementById('status-container');
 
-                // スコアのリストを生成
-                let scoreListHtml = '';
-                for (const char in gameState.scores) {
-                    const score = gameState.scores[char];
-                    scoreListHtml += `<li>${characterNames[char]}親愛度: <span class="font-bold text-[#E8A2AD]">${score}</span></li>`;
-                    if (score > maxScore) {
-                        maxScore = score;
-                        favoriteCharacter = char;
-                    }
-                }
+// 親愛度リストを削除
+const existingScoreList = document.getElementById('final-score-list');
+if (existingScoreList) {
+existingScoreList.remove();
+}
 
-                // 最終結果のテキストと画像を設定
-                if (favoriteCharacter && maxScore > 0) {
-                    if (maxScore >= 50) {
-                        storyTextElem.innerHTML = `<span class="text-xl font-bold text-[#E8A2AD]">${characterNames[favoriteCharacter]}</span>との物語は、最高の結末を迎えました！彼の隣で、あなたは本当の幸せを見つけました。`;
-                        storyImageElem.src = "https://placehold.co/800x350/F2CDD4/5D4037?text=ハッピーエンド";
-                    } else {
-                        storyTextElem.innerHTML = `今回は<span class="text-xl font-bold text-[#E8A2AD]">${characterNames[favoriteCharacter]}</span>と最も親密になりました。物語はまだ続きます…`;
-                        storyImageElem.src = "https://placehold.co/800x350/E8D6E1/5D4037?text=ノーマルエンド";
-                    }
-                } else {
-                    storyTextElem.innerHTML = `今回は誰とも結ばれませんでした。物語はまだ続きます…`;
-                    storyImageElem.src = "https://placehold.co/800x350/E8D6E1/5D4037?text=ノーマルエンド";
-                }
+// 語句解説リストを削除
+const existingVocabList = document.getElementById('vocab-list');
+if(existingVocabList){
+existingVocabList.remove();
+}
 
-                // ボタンとスコア表示を更新
-                choicesContainer.innerHTML = '';
-                const restartButton = document.createElement('button');
-                restartButton.textContent = "最初からやり直す";
-                restartButton.className = "choice-button bg-[#E8A2AD] text-[#5D4037] py-3 px-6 rounded-full font-semibold hover:bg-[#F2CDD4] transition-all duration-300 shadow-lg";
-                restartButton.onclick = () => {
-                    gameState.scores = { katsura: 0, hara: 0, wakatsuki: 0, tanaka: 0 };
-                    gameState.progress = 'start';
-                    updateScreen();
-                };
-                choicesContainer.appendChild(restartButton);
+if (gameState.progress === 'final_end') {
+// 親愛度を計算して最終結果を表示する
+let maxScore = 0;
+let favoriteCharacter = null;
+const characterNames = {
+katsura: "<ruby>桂<rt>かつら</rt> 太郎<rt>たろう</rt></ruby>",
+hara: "<ruby>原<rt>はら</rt> 敬<rt>たかし</rt></ruby>",
+wakatsuki: "<ruby>若槻<rt>わかつき</rt> 礼次郎<rt>れいじろう</rt></ruby>",
+tanaka: "<ruby>田中<rt>たなか</rt> 義一<rt>ぎいち</rt></ruby>"
+};
 
-                // 親愛度スコアを表示
-                const finalScoreList = document.createElement('ul');
-                finalScoreList.id = 'final-score-list';
-                finalScoreList.innerHTML = scoreListHtml;
-                storyTextElem.after(finalScoreList);
+// スコアのリストを生成
+let scoreListHtml = '';
+for (const char in gameState.scores) {
+const score = gameState.scores[char];
+scoreListHtml += `<li>${characterNames[char]}親愛度: <span class="font-bold text-[#E8A2AD]">${score}</span></li>`;
+if (score > maxScore) {
+maxScore = score;
+favoriteCharacter = char;
+}
+}
 
-                statusContainer.classList.add('hidden'); // ゲーム中は非表示
-                return;
-            }
+// 最終結果のテキストと画像を設定
+if (favoriteCharacter && maxScore > 0) {
+if (maxScore >= 50) {
+storyTextElem.innerHTML = `<span class="text-xl font-bold text-[#E8A2AD]">${characterNames[favoriteCharacter]}</span>との物語は、最高の<ruby>結末<rt>けつまつ</rt></ruby>を<ruby>迎<rt>むか</rt></ruby>えました！彼の<ruby>隣<rt>となり</rt></ruby>で、あなたは<ruby>本当<rt>ほんとう</rt></ruby>の<ruby>幸<rt>しあわ</rt></ruby>せを<ruby>見<rt>み</rt></ruby>つけました。`;
+storyImageElem.src = "https://placehold.co/800x350/F2CDD4/5D4037?text=ハッピーエンド";
+} else {
+storyTextElem.innerHTML = `今回は<span class="text-xl font-bold text-[#E8A2AD]">${characterNames[favoriteCharacter]}</span>と<ruby>最<rt>もっと</rt></ruby>も<ruby>親密<rt>しんみつ</rt></ruby>になりました。<ruby>物語<rt>ものがたり</rt></ruby>はまだ<ruby>続<rt>つづ</rt></ruby>きます…`;
+storyImageElem.src = "https://placehold.co/800x350/E8D6E1/5D4037?text=ノーマルエンド";
+}
+} else {
+storyTextElem.innerHTML = `今回は<ruby>誰<rt>だれ</rt></ruby>とも<ruby>結<rt>むす</rt></ruby>ばれませんでした。<ruby>物語<rt>ものがたり</rt></ruby>はまだ<ruby>続<rt>つづ</rt></ruby>きます…`;
+storyImageElem.src = "https://placehold.co/800x350/E8D6E1/5D4037?text=ノーマルエンド";
+}
 
-            // 親愛度リストを削除
-            const existingScoreList = document.getElementById('final-score-list');
-            if (existingScoreList) {
-                existingScoreList.remove();
-            }
+// ボタンとスコア表示を更新
+choicesContainer.innerHTML = '';
+const restartButton = document.createElement('button');
+restartButton.textContent = "<ruby>最初<rt>さいしょ</rt></ruby>からやり<ruby>直<rt>なお</rt></ruby>す";
+restartButton.className = "choice-button bg-[#E8A2AD] text-[#5D4037] py-3 px-6 rounded-full font-semibold hover:bg-[#F2CDD4] transition-all duration-300 shadow-lg";
+restartButton.onclick = () => {
+gameState.scores = { katsura: 0, hara: 0, wakatsuki: 0, tanaka: 0 };
+gameState.progress = 'start';
+updateScreen();
+};
+choicesContainer.appendChild(restartButton);
 
-            storyTextElem.textContent = currentScene.text;
-            storyImageElem.src = currentScene.image;
-            characterNameElem.textContent = currentScene.character || "";
+// 親愛度スコアを表示
+const finalScoreList = document.createElement('ul');
+finalScoreList.id = 'final-score-list';
+finalScoreList.innerHTML = scoreListHtml;
+storyTextElem.after(finalScoreList);
 
-            choicesContainer.innerHTML = '';
-            currentScene.choices.forEach(choice => {
-                const button = document.createElement('button');
-                button.textContent = choice.text;
-                button.className = "choice-button bg-[#E8A2AD] text-[#5D4037] py-3 px-6 rounded-full font-semibold hover:bg-[#F2CDD4] transition-all duration-300 shadow-lg";
-                button.onclick = () => {
-                    if (choice.scoreChange) {
-                        for (const char in choice.scoreChange) {
-                            gameState.scores[char] += choice.scoreChange[char];
-                        }
-                    }
-                    gameState.progress = choice.next;
-                    updateScreen();
-                };
-                choicesContainer.appendChild(button);
-            });
-        }
+statusContainer.classList.add('hidden'); // ゲーム中は非表示
+return;
+}
 
-        // プロフィールを表示する関数
-        function showProfiles() {
-            document.getElementById('game-container').style.display = 'none';
-            const profileContainer = document.getElementById('profile-container');
-            profileContainer.style.display = 'block';
+storyTextElem.innerHTML = currentScene.text;
+storyImageElem.src = currentScene.image;
+characterNameElem.innerHTML = currentScene.character || "";
 
-            const profileList = document.getElementById('profile-list');
-            profileList.innerHTML = '';
-            for (const key in profiles) {
-                const profile = profiles[key];
-                const card = document.createElement('div');
-                card.className = "profile-card";
-                card.innerHTML = `
-                    <img src="${profile.image}" alt="${profile.name}の画像" class="profile-image">
-                    <div>
-                        <h3 class="text-2xl font-bold mb-2 text-[#E8A2AD]">${profile.name}</h3>
-                        <p class="text-sm leading-relaxed">${profile.bio}</p>
-                        <p class="text-sm mt-2 font-semibold text-[#5D4037]">${profile.details}</p>
-                        <p class="text-sm mt-2 font-semibold text-[#5D4037]">${profile.historical_facts}</p>
-                    </div>
-                `;
-                profileList.appendChild(card);
-            }
-        }
+choicesContainer.innerHTML = '';
+currentScene.choices.forEach(choice => {
+const button = document.createElement('button');
+button.innerHTML = choice.text;
+button.className = "choice-button bg-[#E8A2AD] text-[#5D4037] py-3 px-6 rounded-full font-semibold hover:bg-[#F2CDD4] transition-all duration-300 shadow-lg";
+button.onclick = () => {
+if (choice.scoreChange) {
+for (const char in choice.scoreChange) {
+gameState.scores[char] += choice.scoreChange[char];
+}
+}
+gameState.progress = choice.next;
+updateScreen();
+};
+choicesContainer.appendChild(button);
+});
+}
 
-        // プロフィールを非表示にする関数
-        function hideProfiles() {
-            document.getElementById('profile-container').style.display = 'none';
-            document.getElementById('game-container').style.display = 'block';
-        }
+// プロフィールを表示する関数
+function showProfiles() {
+document.getElementById('game-container').style.display = 'none';
+document.getElementById('profile-container').style.display = 'block';
 
-        // ゲームを初期化
-        updateScreen();
-    </script>
+const profileList = document.getElementById('profile-list');
+profileList.innerHTML = '';
+for (const key in profiles) {
+const profile = profiles[key];
+const card = document.createElement('div');
+card.className = "profile-card";
+card.innerHTML = `
+<img src="${profile.image}" alt="${profile.name}の画像" class="profile-image">
+<div>
+<h3 class="text-2xl font-bold mb-2 text-[#E8A2AD]">${profile.name}</h3>
+<p class="text-sm leading-relaxed">${profile.bio}</p>
+<p class="text-sm mt-2 font-semibold text-[#5D4037]">${profile.details}</p>
+<p class="text-sm mt-2 font-semibold text-[#5D4037]">${profile.historical_facts}</p>
+</div>
+`;
+profileList.appendChild(card);
+}
+}
+
+// プロフィールを非表示にする関数
+function hideProfiles() {
+document.getElementById('profile-container').style.display = 'none';
+document.getElementById('game-container').style.display = 'block';
+}
+
+// 重要語句解説を表示する関数
+function showVocab() {
+document.getElementById('game-container').style.display = 'none';
+document.getElementById('vocab-container').style.display = 'block';
+}
+
+// 重要語句解説を非表示にする関数
+function hideVocab() {
+document.getElementById('vocab-container').style.display = 'none';
+document.getElementById('game-container').style.display = 'block';
+}
+
+// ゲームを初期化
+updateScreen();
+</script>
 </body>
-
 </html>

@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>大正浪漫乙女ゲーム</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* フォントと全体的なスタイル */
+        @import url('https://fonts.googleapis.com/css2?family=Kiwi+Maru:wght@400;500&display=swap');
+
+        body {
+            font-family: 'Kiwi Maru', sans-serif;
+            background-image: linear-gradient(to bottom, #FCEEEF, #F4D7DF);
+            color: #5D4037;
+            padding: 1.5rem;
+        }
+
+        /* ゲームコンテナのスタイル */
+        .story-container {
+            max-width: 800px;
+            margin: auto;
+            padding: 2.5rem;
+            background-color: #ffffff;
+            border-radius: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* ストーリー画像のスタイル */
+        .story-image {
+            width: 100%;
+            height: 350px;
+            object-fit: cover;
+            border-radius: 1.75rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        /* ストーリーテキストのスタイル */
+        .story-text {
+            font-size: 1.2rem;
+            line-height: 2;
+            min-height: 180px;
+            text-align: justify;
+        }
+
+        /* キャラクター名のスタイル */
+        .character-name {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #E8A2AD;
+            align-self: flex-start;
+            margin-bottom: 0.5rem;
+        }
+
+        /* 選択肢ボタンのスタイル */
+        .choice-button {
+            transition: transform 0.3s, box-shadow 0.3s, background-color 0.3s;
+            width: 100%;
+            text-align: center;
+        }
+
+        .choice-button:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            background-color: #F2CDD4;
+        }
+
+        /* ボタンコンテナのスタイル */
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+            width: 100%;
+        }
+
+        /* プロフィールコンテナのスタイル */
+        .profile-container {
+            display: none;
+            max-width: 800px;
+            margin: auto;
+            padding: 2.5rem;
+            background-color: #ffffff;
+            border-radius: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        /* プロフィールカードのスタイル */
+        .profile-card {
+            display: flex;
+            align-items: center;
+            margin-bottom: 2rem;
+            background-color: #FCEEEF;
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        /* プロフィール画像のスタイル */
+        .profile-image {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 4px solid #E8A2AD;
+            margin-right: 2rem;
+        }
+
+        /* 親愛度表示のスタイル */
+        #final-score-list {
+            list-style-type: none;
+            padding: 0;
+            width: 100%;
+            text-align: left;
+            margin-top: 1.5rem;
+        }
+
+        #final-score-list li {
+            font-size: 1.25rem;
+            margin-bottom: 0.75rem;
+            color: #5D4037;
+        }
+
+        /* レスポンシブデザイン */
+        @media (max-width: 640px) {
+            .profile-card {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .profile-image {
+                margin-right: 0;
+                margin-bottom: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body class="p-4">
+    <div id="game-container" class="story-container">
+        <h1 class="text-4xl text-center font-bold mb-6 text-[#E8A2AD]">大正浪漫乙女ゲーム</h1>
+        <div id="status-container" class="text-center mb-6 hidden">
+            <span id="score-katsura">桂親愛度: <span class="font-bold text-[#E8A2AD]">0</span></span>
+            <span id="score-hara" class="ml-4">原親愛度: <span class="font-bold text-[#E8A2AD]">0</span></span>
+            <span id="score-wakatsuki" class="ml-4">若槻親愛度: <span class="font-bold text-[#E8A2AD]">0</span></span>
+            <span id="score-tanaka" class="ml-4">田中親愛度: <span class="font-bold text-[#E8A2AD]">0</span></span>
+        </div>
+        <img id="story-image" src="https://placehold.co/800x350/E8D6E1/5D4037?text=華やかな庭園" alt="ゲームの背景画像"
+            class="story-image">
+        <div class="character-name" id="character-name"></div>
+        <p class="story-text" id="story-text"></p>
+        <div id="choices-container" class="button-group mt-8"></div>
+        <button onclick="showProfiles()"
+            class="choice-button bg-[#E8A2AD] text-[#5D4037] py-3 px-6 rounded-full font-semibold mt-8 shadow-lg w-auto">人物プロフィール</button>
+    </div>
+
+    <!-- 新しく追加したプロフィール表示用コンテナ -->
+    <div id="profile-container" class="profile-container">
+        <h2 class="text-3xl text-center font-bold mb-8 text-[#E8A2AD]">人物プロフィール</h2>
+        <div id="profile-list"></div>
+        <button onclick="hideProfiles()"
+            class="choice-button bg-[#E8A2AD] text-[#5D4037] py-3 px-6 rounded-full font-semibold mt-8 shadow-lg w-auto">ゲームに戻る</button>
+    </div>
+
+    <script>
+        // ゲームの状態を管理するオブジェクト
+        let gameState = {
+            progress: 'start',
+            character: null,
+            scores: {
+                katsura: 0,
+                hara: 0,
+                wakatsuki: 0,
+                tanaka: 0
+            }
+        };
+
+        // プロフィール情報
+        const profiles = {
+            katsura: {
+                name: "桂 太郎",
+                bio: "陸軍大将。三度首相を務めた、明治・大正期の政界の重鎮。日露戦争後の政権を担い、強固な藩閥政治を築いた。その厳格な人柄の裏には、あなたへの深い愛情が秘められている。",
+                image: "https://placehold.co/150x150/F5C9C8/5D4037?text=桂",
+                details: "誕生日: 1848年11月28日, 血液型: A型",
+                historical_facts: "【1912年】第3次桂内閣を組織。陸軍の二個師団増設問題で、藩閥政治に対する国民の不満が高まり、憲政擁護運動が激化。この運動により、わずか2ヶ月で総辞職に追い込まれ、大正政変の引き金となった。"
+            },
+            hara: {
+                name: "原 敬",
+                bio: "「平民宰相」として知られる、日本初の本格的な政党内閣を組織した首相。国民の声を政治に反映させることを目指し、民衆の生活向上に尽力した。彼の穏やかな笑顔は、あなたの心を温かく包み込む。",
+                image: "https://placehold.co/150x150/B8E8B8/5D4037?text=原",
+                details: "誕生日: 1856年3月15日, 血液型: O型",
+                historical_facts: "【1918年】米騒動後の政治不安の中、立憲政友会総裁として初の本格的な政党内閣を組織。庶民派として人気を集めたが、普通選挙法の実施は先送りし、鉄道建設や教育の拡充に力を入れた。"
+            },
+            wakatsuki: {
+                name: "若槻 礼次郎",
+                bio: "官僚出身の政治家で、二度首相を務めた。協調外交を推進し、国際的な信頼関係を築くことに尽力した。優しく知的な彼は、困難な時代を乗り越えるあなたの良き理解者となる。",
+                image: "https://placehold.co/150x150/D4B8E1/5D4037?text=若槻",
+                details: "誕生日: 1866年3月21日, 血液型: AB型",
+                historical_facts: "【1927年】第1次若槻内閣時に、金融恐慌が勃発。台湾銀行の休業を巡る政府の対応が国会で否決され、内閣は総辞職に追い込まれた。"
+            },
+            tanaka: {
+                name: "田中 義一",
+                bio: "陸軍大将。豪放磊落な性格で、満州の権益確保のため強硬な外交政策を主張した。彼の強引な言動の裏には、大切なものを守り抜こうとする揺るぎない信念が隠されている。",
+                image: "https://placehold.co/150x150/E3C2C2/5D4037?text=田中",
+                details: "誕生日: 1864年6月25日, 血液型: B型",
+                historical_facts: "【1928年】第1次田中内閣時に、満州の張作霖が日本軍によって爆殺される事件が勃発。事件の処理を巡り、昭和天皇から厳しい叱責を受け、内閣は総辞職に至った。"
+            }
+        };
+
+        // ストーリーのデータ
+        const story = {
+            start: {
+                text: "華やかな大正時代、私は名門・西園寺家のお姫様。今日は園遊会に招かれています。豪華なドレスに身を包み、庭園へ向かうと、そこで4人の男性と出会いました。",
+                choices: [
+                    { text: "桂太郎に声をかける", next: 'encounter_katsura' },
+                    { text: "原敬に声をかける", next: 'encounter_hara' },
+                    { text: "若槻礼次郎に声をかける", next: 'encounter_wakatsuki' },
+                    { text: "田中義一に声をかける", next: 'encounter_tanaka' },
+                    { text: "番外編をプレイする", next: 'extra_episode_start' }
+                ],
+                image: "https://placehold.co/800x350/E8D6E1/5D4037?text=華やかな庭園"
+            },
+            encounter_katsura: {
+                text: "「お嬢様、この桜のように可憐なお姿…」厳格な軍服に身を包んだ桂さんが、私に深々と頭を下げた。彼の言葉に、私は少し胸が高鳴った。",
+                choices: [
+                    { text: "「ありがとうございます、桂様もお素敵です」と微笑む", next: 'katsura_story_1', scoreChange: { katsura: 15 } },
+                    { text: "「お仕事は順調ですか？」と話しかける", next: 'katsura_story_2', scoreChange: { katsura: 10 } }
+                ],
+                character: "桂 太郎",
+                image: "https://placehold.co/800x350/F5C9C8/5D4037?text=桂太郎とあなた（スチル）"
+            },
+            katsura_story_1: {
+                text: "私の言葉に、桂さんは少し照れたように「お褒めいただき光栄です。お嬢様を守るためなら、どんな困難も乗り越えましょう」と力強く答えてくれた。彼の眼差しは真剣だった。",
+                choices: [
+                    { text: "「大正政変」について尋ねる", next: 'katsura_story_1_1', scoreChange: { katsura: 20 } },
+                    { text: "「お守りいただけるなんて、光栄です」と返す", next: 'katsura_story_1_2', scoreChange: { katsura: 25 } }
+                ],
+                character: "桂 太郎",
+                image: "https://placehold.co/800x350/F5C9C8/5D4037?text=桂太郎とあなた（スチル）"
+            },
+            katsura_story_1_1: {
+                text: "「…大正政変は、この国の未来を賭けた戦いです。しかし、あなたがいるからこそ、私は戦えます」彼の言葉に、あなたの心は揺さぶられる。",
+                choices: [
+                    { text: "物語の終わりへ", next: 'final_end', scoreChange: { katsura: 20 } }
+                ],
+                character: "桂 太郎",
+                image: "https://placehold.co/800x350/F5C9C8/5D4037?text=桂太郎とあなた（スチル）"
+            },
+            katsura_story_1_2: {
+                text: "「…ええ、一生をかけて、あなたをお守りします」彼はそっとあなたの手に触れる。その温かさに、あなたは深い愛情を感じた。",
+                choices: [
+                    { text: "物語の終わりへ", next: 'final_end', scoreChange: { katsura: 30 } }
+                ],
+                character: "桂 太郎",
+                image: "https://placehold.co/800x350/F5C9C8/5D4037?text=桂太郎とあなた（スチル）"
+            },
+            encounter_hara: {
+                text: "「おや、お嬢様。このような場所で会うのは珍しいですな。私は原敬と申します。平民ですが、お嬢様のお役に立てることがあるかもしれません」と、彼は気さくに話しかけてきた。",
+                choices: [
+                    { text: "「平民宰相様ですね、存じ上げております」と答える", next: 'hara_story_1', scoreChange: { hara: 15 } },
+                    { text: "「あなたのような方と話すのは初めてです」と正直に伝える", next: 'hara_story_2', scoreChange: { hara: 10 } }
+                ],
+                character: "原 敬",
+                image: "https://placehold.co/800x350/B8E8B8/5D4037?text=原敬とあなた（スチル）"
+            },
+            hara_story_1: {
+                text: "「平民の私でも、お嬢様のようなお方と話せる時代になった。これは良い時代ですな」あなたの言葉に、原さんは嬉しそうに笑った。彼の穏やかな笑顔に、私は安堵した。",
+                choices: [
+                    { text: "「米騒動」について尋ねる", next: 'hara_story_1_1', scoreChange: { hara: 20 } },
+                    { text: "「はい、とても良い時代ですね」と同意する", next: 'hara_story_1_2', scoreChange: { hara: 25 } }
+                ],
+                character: "原 敬",
+                image: "https://placehold.co/800x350/B8E8B8/5D4037?text=原敬とあなた（スチル）"
+            },
+            hara_story_1_1: {
+                text: "「…米騒動は、民衆の苦しみの声です。私はその声を無視できません。お嬢様にも、民衆の暮らしを理解していただきたい」彼の真摯な眼差しに、あなたは心を動かされた。",
+                choices: [
+                    { text: "物語の終わりへ", next: 'final_end', scoreChange: { hara: 20 } }
+                ],
+                character: "原 敬",
+                image: "https://placehold.co/800x350/B8E8B8/5D4037?text=原敬とあなた（スチル）"
+            },
+            hara_story_1_2: {
+                text: "「…ありがとうございます。お嬢様のような方がいてくだされば、この国はもっと良くなります」彼はあなたの手を取り、深く頭を下げた。あなたの心に温かい感情が広がった。",
+                choices: [
+                    { text: "物語の終わりへ", next: 'final_end', scoreChange: { hara: 30 } }
+                ],
+                character: "原 敬",
+                image: "https://placehold.co/800x350/B8E8B8/5D4037?text=原敬とあなた（スチル）"
+            },
+            encounter_wakatsuki: {
+                text: "「おや、西園寺のお嬢様。私は若槻と申します。今度の外交には苦慮しておりまして…」彼は少し困った顔で私に話しかけた。彼の眉間のしわが、苦労を物語っているようだった。",
+                choices: [
+                    { text: "「何かお手伝いできることは？」と尋ねる", next: 'wakatsuki_story_1', scoreChange: { wakatsuki: 15 } },
+                    { text: "「きっとうまくいきますよ」と励ます", next: 'wakatsuki_story_2', scoreChange: { wakatsuki: 10 } }
+                ],
+                character: "若槻 礼次郎",
+                image: "https://placehold.co/800x350/D4B8E1/5D4037?text=若槻礼次郎とあなた（スチル）"
+            },
+            wakatsuki_story_1: {
+                text: "「ありがとうございます。お嬢様の優しさが、私の心に沁み渡ります」私の言葉に、彼は顔を輝かせた。「共に平和な未来を目指しましょう」彼は私の手をそっと握り、その温かさに私は安らぎを感じた。",
+                choices: [
+                    { text: "「協調外交」について尋ねる", next: 'wakatsuki_story_1_1', scoreChange: { wakatsuki: 20 } },
+                    { text: "「はい、平和な未来を信じます」と応える", next: 'wakatsuki_story_1_2', scoreChange: { wakatsuki: 25 } }
+                ],
+                character: "若槻 礼次郎",
+                image: "https://placehold.co/800x350/D4B8E1/5D4037?text=若槻礼次郎とあなた（スチル）"
+            },
+            wakatsuki_story_1_1: {
+                text: "「…協調外交は、困難を伴いますが、戦争を避けるための唯一の道です。私は、この道を歩み続けます」彼は静かに、しかし力強く語った。",
+                choices: [
+                    { text: "物語の終わりへ", next: 'final_end', scoreChange: { wakatsuki: 20 } }
+                ],
+                character: "若槻 礼次郎",
+                image: "https://placehold.co/800x350/D4B8E1/5D4037?text=若槻礼次郎とあなた（スチル）"
+            },
+            wakatsuki_story_1_2: {
+                text: "「…あなたの言葉が、私の支えです。どんな困難も、あなたと一緒なら乗り越えられます」彼の表情は安堵に満ちていた。",
+                choices: [
+                    { text: "物語の終わりへ", next: 'final_end', scoreChange: { wakatsuki: 30 } }
+                ],
+                character: "若槻 礼次郎",
+                image: "https://placehold.co/800x350/D4B8E1/5D4037?text=若槻礼次郎とあなた（スチル）"
+            },
+            encounter_tanaka: {
+                text: "「ほう、お嬢様ですかな。俺は田中義一だ。平和だの協調だのと言っている暇はねぇ。力で満州の権益は守る。俺についてくれば、退屈はさせねぇぜ」彼は私の目をまっすぐに見て、挑戦的な笑みを浮かべた。彼の強引さに、私は少し戸惑いつつも、目を離せなかった。",
+                choices: [
+                    { text: "「お言葉ですが、力だけでは何も解決しません」と反論する", next: 'tanaka_story_1', scoreChange: { tanaka: 15 } },
+                    { text: "「あなたのような方は初めてです…」と正直に伝える", next: 'tanaka_story_2', scoreChange: { tanaka: 10 } }
+                ],
+                character: "田中 義一",
+                image: "https://placehold.co/800x350/E3C2C2/5D4037?text=田中義一とあなた（スチル）"
+            },
+            tanaka_story_1: {
+                text: "「面白い。俺の考えに反論するとはな」彼はニヤリと笑った。「だが、それがお嬢様の想いなら、少しは考えてやろう」彼の心に、わずかな変化が生まれた気がした。",
+                choices: [
+                    { text: "「山東出兵」について尋ねる", next: 'tanaka_story_1_1', scoreChange: { tanaka: 20 } },
+                    { text: "「私と一緒なら、別の道が見つかるはずです」と伝える", next: 'tanaka_story_1_2', scoreChange: { tanaka: 25 } }
+                ],
+                character: "田中 義一",
+                image: "https://placehold.co/800x350/E3C2C2/5D4037?text=田中義一とあなた（スチル）"
+            },
+            tanaka_story_1_1: {
+                text: "「…山東出兵は、日本の未来のためだ。だが、お前がそれを望まないなら…」彼は少し戸惑った様子を見せた。あなたの言葉が、彼の心を少しずつ変えていく。",
+                choices: [
+                    { text: "物語の終わりへ", next: 'final_end', scoreChange: { tanaka: 20 } }
+                ],
+                character: "田中 義一",
+                image: "https://placehold.co/800x350/E3C2C2/5D4037?text=田中義一とあなた（スチル）"
+            },
+            tanaka_story_1_2: {
+                text: "「…フン。そうか。お前と一緒なら、面白いことができそうだ」彼はあなたの言葉を気に入り、豪快に笑った。彼の笑顔に、あなたは魅了された。",
+                choices: [
+                    { text: "物語の終わりへ", next: 'final_end', scoreChange: { tanaka: 30 } }
+                ],
+                character: "田中 義一",
+                image: "https://placehold.co/800x350/E3C2C2/5D4037?text=田中義一とあなた（スチル）"
+            },
+            final_end: {
+                text: "物語の終わりです。親愛度の合計に基づいて、あなたと最も親密になった人物が決まります。",
+                choices: [], // choices will be dynamically generated
+                image: "https://placehold.co/800x350/FFC0CB/5D4037?text=物語の終わり"
+            },
+            // ここから番外編のシナリオ
+            extra_episode_start: {
+                text: "ここは鹿鳴館の応接室。あなたは日本の未来について議論する円卓会議に招かれました。そこに現れたのは、歴史を動かしてきた4人の人物でした。",
+                choices: [
+                    { text: "彼らの話を聞く", next: 'extra_episode_intro' }
+                ],
+                image: "https://placehold.co/800x350/F8D7C8/5D4037?text=鹿鳴館の応接室"
+            },
+            extra_episode_intro: {
+                text: "それぞれの思惑が交錯する中、一人の男性が口を開きました。「大戦景気という言葉を耳にしましたか？これは第一次世界大戦をきっかけに、日本が空前の好景気を迎えたことです。」",
+                choices: [
+                    { text: "「景気の良い話ですね」と微笑む", next: 'extra_episode_topic_1' },
+                    { text: "「具体的には、どのような産業が潤ったのですか？」と尋ねる", next: 'extra_episode_topic_1_details' }
+                ],
+                character: "原 敬",
+                image: "https://placehold.co/800x350/F8D7C8/5D4037?text=鹿鳴館の応接室"
+            },
+            extra_episode_topic_1: {
+                text: "原「ええ、まさに！ヨーロッパが戦争で疲弊する中、日本はアジア市場での輸出を伸ばし、巨額の利益を上げました。それまで借金があった国が、逆に諸外国にお金を貸すまでになったのです。」",
+                choices: [
+                    { text: "「すごいですね！」と感嘆する", next: 'extra_episode_topic_2' },
+                    { text: "「輸出が好調だったのは、なぜでしょうか？」と尋ねる", next: 'extra_episode_topic_1_details' }
+                ],
+                character: "原 敬",
+                image: "https://placehold.co/800x350/B8E8B8/5D4037?text=原敬とあなた（スチル）"
+            },
+            extra_episode_topic_1_details: {
+                text: "原「特に綿織物や生糸の輸出が好調でした。ヨーロッパ諸国が戦争のためにアジア市場から撤退した隙を突いて、日本製品が圧倒的なシェアを獲得したのです。」",
+                choices: [
+                    { text: "「造船業はどうでしたか？」と質問する", next: 'extra_episode_topic_2' }
+                ],
+                character: "原 敬",
+                image: "https://placehold.co/800x350/B8E8B8/5D4037?text=原敬とあなた（スチル）"
+            },
+            extra_episode_topic_2: {
+                text: "若槻「船舶不足のため、造船業も大変な好況でしたね。船を造れば造るほど儲かる時代で、中には一気に財を成し、『船成金』と呼ばれる者も現れました。」彼の言葉は、少し憂鬱そうに聞こえました。",
+                choices: [
+                    { text: "「ですが、その後の不況が…」と続ける", next: 'extra_episode_topic_3' },
+                    { text: "「新しい船を造るのは、素敵なことですね」と話す", next: 'extra_episode_topic_2_optimistic' }
+                ],
+                character: "若槻 礼次郎",
+                image: "https://placehold.co/800x350/D4B8E1/5D4037?text=若槻礼次郎とあなた（スチル）"
+            },
+            extra_episode_topic_2_optimistic: {
+                text: "若槻「…ええ、そうですね。平和な時代なら、それが何よりです。しかし、戦争景気はいつか必ず終わります。私はその後の国際協調こそが大切だと考えています。」彼の眼差しは真剣だった。",
+                choices: [
+                    { text: "「不況の原因は何でしょうか？」と尋ねる", next: 'extra_episode_topic_3' }
+                ],
+                character: "若槻 礼次郎",
+                image: "https://placehold.co/800x350/D4B8E1/5D4037?text=若槻礼次郎とあなた（スチル）"
+            },
+            extra_episode_topic_3: {
+                text: "田中「フン…大戦景気の後の戦後恐慌だ。さらに1923年の関東大震災による震災手形の問題が重なり、不況はさらに深刻になった。政府の対応が甘かったのだ。」田中さんが苦々しげに言いました。彼は若槻さんの協調外交を批判しているようです。",
+                choices: [
+                    { text: "「震災手形とは何ですか？」と質問する", next: 'extra_episode_topic_4' },
+                    { text: "「力による解決が必要だとお考えですか？」と尋ねる", next: 'extra_episode_topic_3_aggressive' }
+                ],
+                character: "田中 義一",
+                image: "https://placehold.co/800x350/E3C2C2/5D4037?text=田中義一とあなた（スチル）"
+            },
+            extra_episode_topic_3_aggressive: {
+                text: "田中「当たり前だ。危機に瀕したときは、弱腰な協調など無意味。国益のためには、時に断固たる措置が必要なのだ。」彼の言葉には、揺るぎない信念が感じられた。",
+                choices: [
+                    { text: "「震災手形について教えてください」と話を変える", next: 'extra_episode_topic_4' }
+                ],
+                character: "田中 義一",
+                image: "https://placehold.co/800x350/E3C2C2/5D4037?text=田中義一とあなた（スチル）"
+            },
+            extra_episode_topic_4: {
+                text: "原「大震災で、多くの企業が銀行から借りたお金を返せなくなりました。その借金の証書が『震災手形』です。政府は、日本銀行がその手形を買い取ることで、銀行を救済しようとしましたが、これがかえって経済の混乱を招いてしまったのです。」原さんが丁寧に、しかし難しい顔で説明してくれました。",
+                choices: [
+                    { text: "「ありがとうございました」と感謝を伝える", next: 'extra_episode_end' }
+                ],
+                character: "原 敬",
+                image: "https://placehold.co/800x350/B8E8B8/5D4037?text=原敬とあなた（スチル）"
+            },
+            extra_episode_end: {
+                text: "様々な思惑が交錯する円卓会議。あなたは彼らの話を聞き、この時代の光と影を垣間見ました。この経験は、あなたの心に深く刻み込まれることでしょう。",
+                choices: [
+                    { text: "最初に戻る", next: 'start' }
+                ],
+                image: "https://placehold.co/800x350/FFC0CB/5D4037?text=物語の終わり"
+            },
+        };
+
+        // 画面を更新する関数
+        function updateScreen() {
+            const currentScene = story[gameState.progress];
+            const storyTextElem = document.getElementById('story-text');
+            const choicesContainer = document.getElementById('choices-container');
+            const characterNameElem = document.getElementById('character-name');
+            const storyImageElem = document.getElementById('story-image');
+            const statusContainer = document.getElementById('status-container');
+
+            if (gameState.progress === 'final_end') {
+                // 親愛度を計算して最終結果を表示する
+                let maxScore = 0;
+                let favoriteCharacter = null;
+                const characterNames = {
+                    katsura: "桂 太郎",
+                    hara: "原 敬",
+                    wakatsuki: "若槻 礼次郎",
+                    tanaka: "田中 義一"
+                };
+
+                // スコアのリストを生成
+                let scoreListHtml = '';
+                for (const char in gameState.scores) {
+                    const score = gameState.scores[char];
+                    scoreListHtml += `<li>${characterNames[char]}親愛度: <span class="font-bold text-[#E8A2AD]">${score}</span></li>`;
+                    if (score > maxScore) {
+                        maxScore = score;
+                        favoriteCharacter = char;
+                    }
+                }
+
+                // 最終結果のテキストと画像を設定
+                if (favoriteCharacter && maxScore > 0) {
+                    if (maxScore >= 50) {
+                        storyTextElem.innerHTML = `<span class="text-xl font-bold text-[#E8A2AD]">${characterNames[favoriteCharacter]}</span>との物語は、最高の結末を迎えました！彼の隣で、あなたは本当の幸せを見つけました。`;
+                        storyImageElem.src = "https://placehold.co/800x350/F2CDD4/5D4037?text=ハッピーエンド";
+                    } else {
+                        storyTextElem.innerHTML = `今回は<span class="text-xl font-bold text-[#E8A2AD]">${characterNames[favoriteCharacter]}</span>と最も親密になりました。物語はまだ続きます…`;
+                        storyImageElem.src = "https://placehold.co/800x350/E8D6E1/5D4037?text=ノーマルエンド";
+                    }
+                } else {
+                    storyTextElem.innerHTML = `今回は誰とも結ばれませんでした。物語はまだ続きます…`;
+                    storyImageElem.src = "https://placehold.co/800x350/E8D6E1/5D4037?text=ノーマルエンド";
+                }
+
+                // ボタンとスコア表示を更新
+                choicesContainer.innerHTML = '';
+                const restartButton = document.createElement('button');
+                restartButton.textContent = "最初からやり直す";
+                restartButton.className = "choice-button bg-[#E8A2AD] text-[#5D4037] py-3 px-6 rounded-full font-semibold hover:bg-[#F2CDD4] transition-all duration-300 shadow-lg";
+                restartButton.onclick = () => {
+                    gameState.scores = { katsura: 0, hara: 0, wakatsuki: 0, tanaka: 0 };
+                    gameState.progress = 'start';
+                    updateScreen();
+                };
+                choicesContainer.appendChild(restartButton);
+
+                // 親愛度スコアを表示
+                const finalScoreList = document.createElement('ul');
+                finalScoreList.id = 'final-score-list';
+                finalScoreList.innerHTML = scoreListHtml;
+                storyTextElem.after(finalScoreList);
+
+                statusContainer.classList.add('hidden'); // ゲーム中は非表示
+                return;
+            }
+
+            // 親愛度リストを削除
+            const existingScoreList = document.getElementById('final-score-list');
+            if (existingScoreList) {
+                existingScoreList.remove();
+            }
+
+            storyTextElem.textContent = currentScene.text;
+            storyImageElem.src = currentScene.image;
+            characterNameElem.textContent = currentScene.character || "";
+
+            choicesContainer.innerHTML = '';
+            currentScene.choices.forEach(choice => {
+                const button = document.createElement('button');
+                button.textContent = choice.text;
+                button.className = "choice-button bg-[#E8A2AD] text-[#5D4037] py-3 px-6 rounded-full font-semibold hover:bg-[#F2CDD4] transition-all duration-300 shadow-lg";
+                button.onclick = () => {
+                    if (choice.scoreChange) {
+                        for (const char in choice.scoreChange) {
+                            gameState.scores[char] += choice.scoreChange[char];
+                        }
+                    }
+                    gameState.progress = choice.next;
+                    updateScreen();
+                };
+                choicesContainer.appendChild(button);
+            });
+        }
+
+        // プロフィールを表示する関数
+        function showProfiles() {
+            document.getElementById('game-container').style.display = 'none';
+            const profileContainer = document.getElementById('profile-container');
+            profileContainer.style.display = 'block';
+
+            const profileList = document.getElementById('profile-list');
+            profileList.innerHTML = '';
+            for (const key in profiles) {
+                const profile = profiles[key];
+                const card = document.createElement('div');
+                card.className = "profile-card";
+                card.innerHTML = `
+                    <img src="${profile.image}" alt="${profile.name}の画像" class="profile-image">
+                    <div>
+                        <h3 class="text-2xl font-bold mb-2 text-[#E8A2AD]">${profile.name}</h3>
+                        <p class="text-sm leading-relaxed">${profile.bio}</p>
+                        <p class="text-sm mt-2 font-semibold text-[#5D4037]">${profile.details}</p>
+                        <p class="text-sm mt-2 font-semibold text-[#5D4037]">${profile.historical_facts}</p>
+                    </div>
+                `;
+                profileList.appendChild(card);
+            }
+        }
+
+        // プロフィールを非表示にする関数
+        function hideProfiles() {
+            document.getElementById('profile-container').style.display = 'none';
+            document.getElementById('game-container').style.display = 'block';
+        }
+
+        // ゲームを初期化
+        updateScreen();
+    </script>
+</body>
+
+</html>
